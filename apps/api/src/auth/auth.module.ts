@@ -10,6 +10,6 @@ import { IdentityService } from "./identity.service";
   imports: [PrismaModule],
   controllers: [AuthController],
   providers: [AuthService, AuthenticatedGuard, IdentityService],
-  exports: [AuthService, AuthenticatedGuard],
+  exports: [AuthService, AuthenticatedGuard, IdentityService],
 })
 export class AuthModule {}
