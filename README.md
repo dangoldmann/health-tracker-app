@@ -51,6 +51,41 @@ Build all apps and packages:
 npm run build
 ```
 
+## Prisma Schema Changes
+
+When you change the Prisma schema in `apps/api/prisma/schema.prisma`, use this workflow:
+
+1. Regenerate the Prisma client:
+
+```sh
+npm --workspace apps/api run prisma:generate
+```
+
+2. If the change affects the database structure, create and apply a migration:
+
+```sh
+npm --workspace apps/api exec prisma migrate dev --name your_change_name
+```
+
+Use this rule of thumb:
+
+- Model, enum, field, index, or relation changes: run `prisma:generate` and `prisma migrate dev`
+- Generator-only changes: run `prisma:generate`
+
+Repo-specific notes:
+
+- The Prisma client is generated from `apps/api/prisma/schema.prisma`
+- The API uses generated client files from `apps/api/src/generated/prisma`
+- Generated Prisma files are ignored by git, so you usually commit:
+  - the updated schema file
+  - the new `apps/api/prisma/migrations/...` files
+
+After changing the schema, it is also a good idea to run:
+
+```sh
+npm run check-types
+```
+
 You can target a specific app or package with Turborepo filters when needed:
 
 ```sh
