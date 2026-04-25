@@ -31,7 +31,9 @@ export class ProtocolsService {
     })) as ProfileWithRiskFactors[];
 
     if (!profiles.length) {
-      throw new NotFoundException("No profiles were found for suggestion generation.");
+      throw new NotFoundException(
+        "No profiles were found for suggestion generation.",
+      );
     }
 
     const [checkupTypes, protocols] = await Promise.all([
@@ -57,7 +59,8 @@ export class ProtocolsService {
         );
         const matchedProtocol = this.matchProtocol(profile, candidates);
         const frequencyDays =
-          matchedProtocol?.suggestedFrequencyDays ?? checkupType.baseFrequencyDays;
+          matchedProtocol?.suggestedFrequencyDays ??
+          checkupType.baseFrequencyDays;
 
         return {
           checkupTypeId: checkupType.id,
@@ -81,7 +84,9 @@ export class ProtocolsService {
 
     return protocols
       .filter((protocol) => this.matchesAge(age, protocol))
-      .filter((protocol) => this.matchesSex(profile.biologicalSex, protocol.sex))
+      .filter((protocol) =>
+        this.matchesSex(profile.biologicalSex, protocol.sex),
+      )
       .filter((protocol) =>
         this.matchesRiskFactor(profile.riskFactors, protocol.riskFactorKey),
       )

@@ -50,4 +50,3 @@ This document outlines the Full-Stack TypeScript architecture for the health tra
 - **Date-fns:** Handles precise date arithmetic for calculating next checkup dates based on custom frequencies.
 - **Zustand:** Lightweight global state for managing the "Active Profile" (switching between family members) in the mobile UI.
 - **Zod:** The single source of truth for all data models and schema validation.
-

@@ -7,7 +7,9 @@ import type { IdentityClaims } from "./types/identity-claims.type";
 
 @Injectable()
 export class IdentityService {
-  constructor(private readonly configService: ConfigService<Environment, true>) {}
+  constructor(
+    private readonly configService: ConfigService<Environment, true>,
+  ) {}
 
   async verifyAccessToken(token: string): Promise<IdentityClaims> {
     try {
@@ -24,7 +26,9 @@ export class IdentityService {
       const email = payload.email;
 
       if (!subject || typeof email !== "string") {
-        throw new UnauthorizedException("Token is missing required identity claims.");
+        throw new UnauthorizedException(
+          "Token is missing required identity claims.",
+        );
       }
 
       return {

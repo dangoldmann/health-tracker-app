@@ -1,13 +1,13 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-const truthyValues = new Set(['1', 'true', 'yes']);
+const truthyValues = new Set(["1", "true", "yes"]);
 
 const coerceBoolean = (value: unknown) => {
-  if (typeof value === 'boolean') {
+  if (typeof value === "boolean") {
     return value;
   }
 
-  if (typeof value === 'string') {
+  if (typeof value === "string") {
     return truthyValues.has(value.toLowerCase());
   }
 
@@ -16,11 +16,11 @@ const coerceBoolean = (value: unknown) => {
 
 export const environmentSchema = z.object({
   NODE_ENV: z
-    .enum(['development', 'test', 'production'])
-    .default('development'),
+    .enum(["development", "test", "production"])
+    .default("development"),
   PORT: z.coerce.number().int().positive().default(4000),
   DATABASE_URL: z.string().min(1),
-  AUTH_PROVIDER_NAME: z.string().min(1).default('supabase'),
+  AUTH_PROVIDER_NAME: z.string().min(1).default("supabase"),
   AUTH_ISSUER: z.string().url(),
   AUTH_JWKS_URL: z.string().url(),
   AUTH_AUDIENCE: z.string().min(1).optional(),

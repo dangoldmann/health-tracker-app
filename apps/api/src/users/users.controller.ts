@@ -1,5 +1,8 @@
 import { Body, Controller, Patch } from "@nestjs/common";
-import { UpdateDeviceTokenInput, updateDeviceTokenSchema } from "@repo/validation";
+import {
+  UpdateDeviceTokenInput,
+  updateDeviceTokenSchema,
+} from "@repo/validation";
 
 import type { ActiveUser } from "../auth/types/active-user.type";
 import { CurrentUser } from "../common/decorators/current-user.decorator";
