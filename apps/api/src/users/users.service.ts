@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { DevicePlatform } from "@prisma/client";
+import { DevicePlatform } from "../generated/prisma/client";
 import { UpdateDeviceTokenInput } from "@repo/validation";
 
 import { PrismaService } from "../prisma/prisma.service";

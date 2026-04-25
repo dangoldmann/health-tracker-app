@@ -1,5 +1,5 @@
 import { ForbiddenException, Injectable } from "@nestjs/common";
-import { GroupRole } from "@prisma/client";
+import { GroupRole } from "../generated/prisma/client";
 import { CreateProfileInput } from "@repo/validation";
 
 import { PrismaService } from "../prisma/prisma.service";

@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from "@nestjs/common";
-import { CheckupStatus } from "@prisma/client";
+import { CheckupStatus } from "../generated/prisma/client";
 import { BulkUpsertUserCheckupsInput } from "@repo/validation";
 
 import { AccessControlService } from "../access-control/access-control.service";

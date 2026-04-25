@@ -1,5 +1,9 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { BiologicalSex, MedicalProtocol, Profile } from "@prisma/client";
+import {
+  BiologicalSex,
+  MedicalProtocol,
+  Profile,
+} from "../generated/prisma/client";
 
 import { AccessControlService } from "../access-control/access-control.service";
 import { PrismaService } from "../prisma/prisma.service";
