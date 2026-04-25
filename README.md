@@ -6,7 +6,9 @@ This repository is a Turborepo for the HealthGuard product and supporting shared
 
 - `apps/web`: primary product application
 - `apps/docs`: optional published documentation site
+- `apps/api`: NestJS backend for auth, family access control, protocols, and reminders
 - `packages/ui`: shared UI components
+- `packages/validation`: shared Zod schemas for backend and client flows
 - `packages/eslint-config`: shared lint rules
 - `packages/typescript-config`: shared TypeScript configuration
 - `docs`: internal project documentation source of truth
