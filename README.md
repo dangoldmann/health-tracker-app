@@ -1,155 +1,87 @@
-# Turborepo starter
+# Health Tracker App
 
-This Turborepo starter is maintained by the Turborepo core team.
+This repository is a Turborepo for the HealthGuard product and supporting shared packages.
 
-## Using this example
+## Repository Structure
 
-Run the following command:
+- `apps/web`: primary product application
+- `apps/docs`: optional published documentation site
+- `packages/ui`: shared UI components
+- `packages/eslint-config`: shared lint rules
+- `packages/typescript-config`: shared TypeScript configuration
+- `docs`: internal project documentation source of truth
+
+## Documentation
+
+Project documentation lives under [`docs/`](./docs/README.md).
+
+- [Architecture docs](./docs/architecture/)
+- [Design docs](./docs/design/)
+- [Product docs](./docs/product/)
+- [Documentation index](./docs/README.md)
+
+Current core documents:
+
+- [Infrastructure Strategy](./docs/architecture/infrastructure-strategy.md)
+- [Tech Stack](./docs/architecture/tech-stack.md)
+- [Database Schema](./docs/architecture/database-schema.md)
+- [Design System](./docs/design/design-system.md)
+- [Product Requirements](./docs/product/product-requirements.md)
+- [Dynamic Onboarding Structure](./docs/product/dynamic-onboarding-structure.md)
+
+## Turborepo Workspace
+
+Install dependencies:
 
 ```sh
-npx create-turbo@latest
+npm install
 ```
 
-## What's inside?
+Run the monorepo in development mode:
 
-This Turborepo includes the following packages/apps:
+```sh
+npm run dev
+```
+
+Build all apps and packages:
+
+```sh
+npm run build
+```
+
+You can target a specific app or package with Turborepo filters when needed:
+
+```sh
+npx turbo build --filter=web
+npx turbo dev --filter=docs
+```
+
+## Turborepo Reference
+
+This workspace started from the Turborepo starter, and that reference material is still useful as the monorepo grows.
 
 ### Apps and Packages
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `@repo/ui`: a stub React component library shared by both `web` and `docs` applications
-- `@repo/eslint-config`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `@repo/typescript-config`: `tsconfig.json`s used throughout the monorepo
+- `docs`: a [Next.js](https://nextjs.org/) app that can become the published documentation site
+- `web`: the main application
+- `@repo/ui`: shared React component library
+- `@repo/eslint-config`: shared ESLint configurations
+- `@repo/typescript-config`: shared TypeScript configurations
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
-
-### Utilities
-
-This Turborepo has some additional tools already setup for you:
-
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
-
-### Build
-
-To build all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo build
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo build
-npm dlx turbo build
-npm exec turbo build
-```
-
-You can build a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo build --filter=docs
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo build --filter=docs
-npm exec turbo build --filter=docs
-npm exec turbo build --filter=docs
-```
-
-### Develop
-
-To develop all apps and packages, run the following command:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
-
-```sh
-cd my-turborepo
-turbo dev
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
-npx turbo dev
-npm exec turbo dev
-npm exec turbo dev
-```
-
-You can develop a specific package by using a [filter](https://turborepo.dev/docs/crafting-your-repository/running-tasks#using-filters):
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo dev --filter=web
-```
-
-Without global `turbo`:
-
-```sh
-npx turbo dev --filter=web
-npm exec turbo dev --filter=web
-npm exec turbo dev --filter=web
-```
+Each package and app is TypeScript-based.
 
 ### Remote Caching
 
-> [!TIP]
-> Vercel Remote Cache is free for all plans. Get started today at [vercel.com](https://vercel.com/signup?utm_source=remote-cache-sdk&utm_campaign=free_remote_cache).
+Turborepo supports [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) so build artifacts can be shared across machines and CI.
 
-Turborepo can use a technique known as [Remote Caching](https://turborepo.dev/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup?utm_source=turborepo-examples), then enter the following commands:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed (recommended):
+To enable it later with Vercel:
 
 ```sh
-cd my-turborepo
-turbo login
-```
-
-Without global `turbo`, use your package manager:
-
-```sh
-cd my-turborepo
 npx turbo login
-npm exec turbo login
-npm exec turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-With [global `turbo`](https://turborepo.dev/docs/getting-started/installation#global-installation) installed:
-
-```sh
-turbo link
-```
-
-Without global `turbo`:
-
-```sh
 npx turbo link
-npm exec turbo link
-npm exec turbo link
 ```
 
-## Useful Links
-
-Learn more about the power of Turborepo:
+### Useful Links
 
 - [Tasks](https://turborepo.dev/docs/crafting-your-repository/running-tasks)
 - [Caching](https://turborepo.dev/docs/crafting-your-repository/caching)
