@@ -1,18 +1,18 @@
 import { z } from "zod";
 
-const truthyValues = new Set(["1", "true", "yes"]);
+// const truthyValues = new Set(["1", "true", "yes"]);
 
-const coerceBoolean = (value: unknown) => {
-  if (typeof value === "boolean") {
-    return value;
-  }
+// const coerceBoolean = (value: unknown) => {
+//   if (typeof value === "boolean") {
+//     return value;
+//   }
 
-  if (typeof value === "string") {
-    return truthyValues.has(value.toLowerCase());
-  }
+//   if (typeof value === "string") {
+//     return truthyValues.has(value.toLowerCase());
+//   }
 
-  return false;
-};
+//   return false;
+// };
 
 export const environmentSchema = z.object({
   NODE_ENV: z
