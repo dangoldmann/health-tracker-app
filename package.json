@@ -10,6 +10,8 @@
     "postinstall": "npm --workspace apps/api run prisma:generate"
   },
   "devDependencies": {
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
     "prettier": "^3.7.4",
     "turbo": "^2.9.6",
     "typescript": "5.9.2"
