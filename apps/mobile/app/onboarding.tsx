@@ -1,5 +1,5 @@
-import { OnboardingBlueprintScreen } from "@/features/onboarding/screens/onboarding-blueprint-screen";
+import { OnboardingPlaceholderScreen } from "@/features/onboarding/screens/onboarding-placeholder-screen";
 
 export default function OnboardingRoute() {
-  return <OnboardingBlueprintScreen />;
+  return <OnboardingPlaceholderScreen />;
 }

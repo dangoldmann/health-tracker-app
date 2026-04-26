@@ -1,8 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import { DevicePlatform } from "../generated/prisma/client";
-import { UpdateDeviceTokenInput } from "@repo/validation";
+import {
+  UpdateDeviceTokenInput,
+  UpdateOnboardingStatusInput,
+} from "@repo/validation";
 
 import { PrismaService } from "../prisma/prisma.service";
+import {
+  toOnboardingStatusResponse,
+} from "./user-state.presenter";
 
 @Injectable()
 export class UsersService {
@@ -27,5 +33,24 @@ export class UsersService {
         lastSeenAt: new Date(),
       },
     });
+  }
+
+  async updateOnboardingStatus(
+    userId: string,
+    input: UpdateOnboardingStatusInput,
+  ) {
+    const user = await this.prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        onboardingCompletedAt: input.completed ? new Date() : null,
+      },
+      select: {
+        onboardingCompletedAt: true,
+      },
+    });
+
+    return toOnboardingStatusResponse(user);
   }
 }

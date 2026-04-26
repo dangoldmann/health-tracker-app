@@ -1,3 +1,5 @@
+/* global process */
+
 import { createReadStream } from "node:fs";
 import { access, stat } from "node:fs/promises";
 import { createServer } from "node:http";

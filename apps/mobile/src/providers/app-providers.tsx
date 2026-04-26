@@ -9,6 +9,7 @@ import { SafeAreaProvider } from "react-native-safe-area-context";
 import { theme } from "@/lib/constants/theme";
 import { queryPersister } from "@/lib/query/persister";
 import { queryClient } from "@/lib/query/query-client";
+import { AuthProvider } from "@/providers/auth-provider";
 import { useOnboardingStore } from "@/stores/onboarding-store";
 
 export function AppProviders({ children }: { children: ReactNode }) {
@@ -23,10 +24,12 @@ export function AppProviders({ children }: { children: ReactNode }) {
       persistOptions={{ persister: queryPersister }}
     >
       <SafeAreaProvider>
-        <View className="flex-1 bg-background">
-          <StatusBar style="dark" />
-          {children}
-        </View>
+        <AuthProvider>
+          <View className="flex-1 bg-background">
+            <StatusBar style="dark" />
+            {children}
+          </View>
+        </AuthProvider>
       </SafeAreaProvider>
     </PersistQueryClientProvider>
   );

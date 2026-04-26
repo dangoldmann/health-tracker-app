@@ -20,6 +20,6 @@ export class AuthController {
 
   @Get("me")
   me(@CurrentUser() activeUser: ActiveUser) {
-    return activeUser;
+    return this.authService.getCurrentUser(activeUser.userId);
   }
 }

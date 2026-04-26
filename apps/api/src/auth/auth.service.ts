@@ -2,6 +2,10 @@ import { Injectable } from "@nestjs/common";
 import { RegisterUserInput } from "@repo/validation";
 
 import { PrismaService } from "../prisma/prisma.service";
+import {
+  appUserSelect,
+  toAppUserResponse,
+} from "../users/user-state.presenter";
 import type { ActiveUser } from "./types/active-user.type";
 import type { IdentityClaims } from "./types/identity-claims.type";
 
@@ -35,7 +39,7 @@ export class AuthService {
   }
 
   async registerCurrentUser(activeUser: ActiveUser, input: RegisterUserInput) {
-    return this.prisma.user.update({
+    const user = await this.prisma.user.update({
       where: {
         id: activeUser.userId,
       },
@@ -44,6 +48,20 @@ export class AuthService {
         authProvider: input.provider,
         timezone: input.timezone,
       },
+      select: appUserSelect,
     });
+
+    return toAppUserResponse(user);
+  }
+
+  async getCurrentUser(userId: string) {
+    const user = await this.prisma.user.findUniqueOrThrow({
+      where: {
+        id: userId,
+      },
+      select: appUserSelect,
+    });
+
+    return toAppUserResponse(user);
   }
 }

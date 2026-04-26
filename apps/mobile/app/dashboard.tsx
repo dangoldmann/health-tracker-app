@@ -1,5 +1,5 @@
-import { DashboardFoundationScreen } from "@/features/dashboard/screens/dashboard-foundation-screen";
+import { DashboardScreen } from "@/features/dashboard/screens/dashboard-screen";
 
 export default function DashboardRoute() {
-  return <DashboardFoundationScreen />;
+  return <DashboardScreen />;
 }

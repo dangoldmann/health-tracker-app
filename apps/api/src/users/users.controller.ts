@@ -1,7 +1,9 @@
 import { Body, Controller, Patch } from "@nestjs/common";
 import {
   UpdateDeviceTokenInput,
+  UpdateOnboardingStatusInput,
   updateDeviceTokenSchema,
+  updateOnboardingStatusSchema,
 } from "@repo/validation";
 
 import type { ActiveUser } from "../auth/types/active-user.type";
@@ -20,5 +22,14 @@ export class UsersController {
     body: UpdateDeviceTokenInput,
   ) {
     return this.usersService.upsertDeviceToken(activeUser.userId, body);
+  }
+
+  @Patch("onboarding-status")
+  updateOnboardingStatus(
+    @CurrentUser() activeUser: ActiveUser,
+    @Body(new ZodValidationPipe(updateOnboardingStatusSchema))
+    body: UpdateOnboardingStatusInput,
+  ) {
+    return this.usersService.updateOnboardingStatus(activeUser.userId, body);
   }
 }
