@@ -21,6 +21,7 @@ build
 .DS_Store
 *.pem
 dist
+apps/api/src/generated/prisma
 
 # debug
 npm-debug.log*
@@ -32,6 +33,7 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
+apps/api/.env
 
 # turbo
 .turbo

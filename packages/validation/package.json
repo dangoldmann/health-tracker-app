@@ -1,0 +1,31 @@
+{
+  "name": "@repo/validation",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "*",
+    "@types/node": "20.19.39",
+    "tsup": "8.5.1",
+    "typescript": "5.9.2"
+  },
+  "dependencies": {
+    "zod": "4.4.3"
+  }
+}
