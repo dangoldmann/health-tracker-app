@@ -1,9 +1,0 @@
-node_modules
-.next
-.turbo
-.vercel
-coverage
-build
-dist
-out
-apps/api/src/generated
