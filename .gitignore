@@ -33,7 +33,7 @@ yarn-error.log*
 .env.development.local
 .env.test.local
 .env.production.local
-apps/api/.env
+.env
 
 # turbo
 .turbo
