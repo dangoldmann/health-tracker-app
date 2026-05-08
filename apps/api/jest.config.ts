@@ -4,7 +4,15 @@ const config: Config = {
   moduleFileExtensions: ['js', 'json', 'ts'],
   rootDir: '.',
   testEnvironment: 'node',
-  testMatch: ['**/*.spec.ts'],
+  testMatch: ['<rootDir>/src/**/*.spec.ts'],
+  collectCoverageFrom: [
+    'src/**/*.ts',
+    '!src/main.ts',
+    '!src/**/*.spec.ts',
+    '!src/**/*.module.ts',
+  ],
+  coverageDirectory: 'coverage/unit',
+  clearMocks: true,
   transform: {
     '^.+\\.ts$': [
       'ts-jest',
