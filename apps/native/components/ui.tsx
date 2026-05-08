@@ -1,6 +1,1 @@
-export {
-  Pressable,
-  ScrollView,
-  Text,
-  View,
-} from "react-native";
+export { Pressable, ScrollView, Text, View } from "react-native";
