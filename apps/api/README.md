@@ -29,15 +29,15 @@ The API uses two database URLs for Prisma-related work:
 - `DATABASE_URL`: runtime connection used by the Nest app
 - `DIRECT_URL`: direct connection used by Prisma CLI commands such as migrations
 
-Prisma CLI reads its database connection from [prisma.config.ts](/Users/dangoldman/Documents/GitHub/health-tracker-app/apps/api/prisma.config.ts), not from `schema.prisma`.
+Prisma CLI reads its database connection from [prisma.config.ts](./prisma.config.ts), not from `schema.prisma`.
 
 ## Prisma quick guide
 
 ### Files that matter
 
-- Schema: [prisma/schema.prisma](/Users/dangoldman/Documents/GitHub/health-tracker-app/apps/api/prisma/schema.prisma)
-- Prisma config: [prisma.config.ts](/Users/dangoldman/Documents/GitHub/health-tracker-app/apps/api/prisma.config.ts)
-- Migrations: [prisma/migrations](/Users/dangoldman/Documents/GitHub/health-tracker-app/apps/api/prisma/migrations)
+- Schema: [prisma/schema.prisma](./prisma/schema.prisma)
+- Prisma config: [prisma.config.ts](./prisma.config.ts)
+- Migrations: [prisma/migrations](./prisma/migrations)
 
 ### Recommended workflow for schema changes
 
