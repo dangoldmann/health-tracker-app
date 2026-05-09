@@ -1,0 +1,20 @@
+generator client {
+  provider              = "prisma-client"
+  output                = "../src/generated/prisma"
+  engineType            = "client"
+  moduleFormat          = "cjs"
+  generatedFileExtension = "ts"
+  importFileExtension   = "ts"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id        String   @id @db.Uuid
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("users")
+}

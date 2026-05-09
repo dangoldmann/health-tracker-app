@@ -20,7 +20,10 @@ export default function LoginScreen() {
         <View className="rounded-[28px] border border-slate-200 bg-white p-6 shadow-sm">
           <Text className="text-sm leading-6 text-slate-500">
             Need an account?{" "}
-            <Link href="/register" style={{ color: "#3B82F6", fontWeight: "600" }}>
+            <Link
+              href="/register"
+              style={{ color: "#3B82F6", fontWeight: "600" }}
+            >
               Register
             </Link>
           </Text>

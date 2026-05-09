@@ -37,7 +37,9 @@ export function AuthButton({
       disabled={disabled}
       onPress={onPress}
     >
-      <Text className={`text-center text-[18px] font-semibold ${textClasses[variant]}`}>
+      <Text
+        className={`text-center text-[18px] font-semibold ${textClasses[variant]}`}
+      >
         {label}
       </Text>
     </Pressable>

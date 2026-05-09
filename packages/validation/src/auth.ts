@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 export const authTokenClaimsSchema = z.object({
   sub: z.string().trim().min(1),

@@ -2,6 +2,14 @@
 
 This document details the multi-branch onboarding process for HealthGuard. The flow is designed to be low-friction while gathering high-quality data to seed the recommendation engine.
 
+This version reflects the current architecture decisions for auth and onboarding persistence:
+
+- The mobile app authenticates directly with Supabase Auth.
+- Sign-up or sign-in happens after onboarding is completed, not at the beginning.
+- The NestJS API does not own credential flows and does not expose `register` or `login` endpoints.
+- The API verifies Supabase bearer tokens and owns application data persistence.
+- The initial backend auth milestone only requires a minimal `users` table plus authenticated endpoints such as `GET /auth/me`.
+
 ---
 
 ## 1. Onboarding Architecture Overview
@@ -11,16 +19,27 @@ The flow uses a **Queue-Based Logic**:
 1. **Selection:** User selects who they are tracking (Self, Kids, Parents).
 2. **Generation:** The app creates a "Setup Queue" (e.g., [Self, Child 1, Parent 1]).
 3. **Execution:** The app iterates through the queue until all profiles are configured.
+4. **Authentication:** Once onboarding data is complete, the app signs the user up or signs them in with Supabase Auth.
+5. **Finalization:** After authentication succeeds, the app sends the onboarding payload to the API using the Supabase access token.
+
+### Auth and Ownership Model
+
+- Supabase Auth is the identity provider and source of truth for authentication.
+- The authenticated user id comes from the JWT `sub` claim.
+- The API treats `sub` as the canonical identity key.
+- The API may return `email` when present, but `email` is not the primary identifier.
+- Authorization is enforced primarily in NestJS, not in the mobile app and not in Postgres RLS for the first iteration.
+- Prisma manages application schema in the `public` schema.
+- The application `users` row is created by the API at the end of onboarding, when the first authenticated onboarding finalization request is processed.
 
 ---
 
 ## 2. Step-by-Step Screen Flow
 
-### Screen 1: Authentication & Welcome
+### Screen 1: Welcome
 
-- **Action:** Social Login (Google/Apple) or Email via Clerk/Supabase.
-- **API Endpoint:** `POST /auth/register`
-- **Payload:** `{ email, provider, timezone }`
+- **Action:** Introduce the product and start onboarding.
+- **Persistence:** No backend write is required at this step.
 
 ### Screen 2: The Intent Selector (Multi-Select)
 
@@ -29,6 +48,13 @@ The flow uses a **Queue-Based Logic**:
   - [ ] My Children
   - [ ] My Parents / Seniors
 - **Logic:** This selection populates the `onboarding_queue` state in Zustand.
+
+### Authentication Step: End of Onboarding
+
+- **Action:** After the user completes onboarding, the app authenticates with Supabase Auth.
+- **Providers:** Email/password and social providers such as Google are both supported.
+- **Backend role:** The NestJS API does not proxy signup or signin. The client receives the Supabase session directly.
+- **Token usage:** The client includes the Supabase access token in `Authorization: Bearer <token>` when calling protected API endpoints.
 
 ---
 
@@ -51,6 +77,7 @@ The flow uses a **Queue-Based Logic**:
   "metadata": { "smoker": false, "hypertension": true },
   "insurance_provider_id": "osde-210"
   }
+
   ```
 
   ```
@@ -113,6 +140,33 @@ Once the profiles are created, the app fetches recommendations and presents them
 2.  **Validation:** Use a shared **Zod** schema for the Profile creation. The same schema should validate the React Native form and the NestJS DTO.
 3.  **Progress UX:** Since this can be a long flow (if tracking multiple people), include a **Progress Bar** at the top.
 4.  **Error Handling:** If the `POST /profiles` fails for one person, allow the user to "Retry" without restarting the whole onboarding.
+5.  **Auth Boundary:** Authentication is intentionally decoupled from early onboarding screens. The onboarding flow can remain local in app state until the user finishes and authenticates.
+6.  **Initial Backend Scope:** The first backend milestone should focus on:
+    - Supabase JWT verification in NestJS
+    - a minimal `public.users` table managed by Prisma
+    - authenticated user context in the API
+    - a protected `GET /auth/me` endpoint
+7.  **User Row Creation:** The API creates the application user row during onboarding finalization, not through a database trigger.
+
+---
+
+## 7. First Iteration Backend Scope
+
+To keep the first implementation focused, the backend should support auth without yet persisting the full onboarding payload.
+
+- **Included in the first iteration:**
+  - Direct client authentication with Supabase Auth
+  - JWT verification in NestJS
+  - Minimal `public.users` table
+  - `GET /auth/me`
+
+- **Explicitly deferred:**
+  - Profile creation during onboarding
+  - Recommendation generation
+  - Device token registration
+  - Any feature-specific user columns beyond the minimal app user record
+
+When onboarding persistence is implemented later, the expected authenticated write entry point should be something like `POST /onboarding/finalize`, which will create the app user row if needed and persist the onboarding-derived domain data.
 
 ---
 

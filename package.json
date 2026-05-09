@@ -7,7 +7,7 @@
     "test": "turbo run test",
     "typecheck": "turbo run typecheck",
     "clean": "turbo run clean && rm -rf node_modules",
-    "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json,md}\" --ignore-path .gitignore"
+    "format": "prettier --write \"**/*.{ts,tsx,js,mjs,jsx,json,md}\" --ignore-path .gitignore"
   },
   "devDependencies": {
     "@types/minimatch": "^6.0.0",
