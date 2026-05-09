@@ -4,7 +4,8 @@ import { envSchema, runtimeEnvSchema } from "@repo/validation";
 describe("envSchema", () => {
   it("accepts a valid runtime configuration without DIRECT_URL", () => {
     const env = runtimeEnvSchema.parse({
-      DATABASE_URL: "postgresql://postgres:postgres@localhost:5432/health_tracker",
+      DATABASE_URL:
+        "postgresql://postgres:postgres@localhost:5432/health_tracker",
       SUPABASE_URL: "https://project.supabase.co",
       SUPABASE_JWKS_URL:
         "https://project.supabase.co/auth/v1/.well-known/jwks.json",

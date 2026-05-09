@@ -64,9 +64,11 @@ npm run test:e2e --workspace=api
 Use this after changing `prisma/schema.prisma`.
 
 What it does:
+
 - Regenerates the Prisma Client used by the API
 
 Use it when:
+
 - You changed models, fields, relations, enums, or mappings in the schema
 - TypeScript imports from the generated Prisma client are out of date
 
@@ -75,15 +77,18 @@ Use it when:
 Use this during development when you want to turn schema changes into a migration file and apply them to your dev database.
 
 What it does:
+
 - Compares your current schema to migration history
 - Creates a new migration in `prisma/migrations`
 - Applies pending migrations to the database
 
 Use it when:
+
 - You changed the Prisma schema and want a real migration file
 - You are developing locally
 
 Do not use it for:
+
 - Production deployment
 
 ### `npm run prisma:migrate:deploy --workspace=api`
@@ -91,13 +96,16 @@ Do not use it for:
 Use this to apply existing migration files to a database without creating new ones.
 
 What it does:
+
 - Applies pending migrations only
 
 Use it when:
+
 - Deploying to staging or production
 - Applying already-committed migrations in a controlled environment
 
 Do not use it for:
+
 - Creating new migrations
 
 ### `npx prisma migrate status --config apps/api/prisma.config.ts`
@@ -105,11 +113,13 @@ Do not use it for:
 Use this when you want to see whether your migration files and database state are in sync.
 
 What it does:
+
 - Checks local migration files
 - Checks the `_prisma_migrations` table in the database
 - Reports drift, unapplied migrations, or missing migration history
 
 Use it when:
+
 - A migration command fails
 - You are unsure whether the database is up to date
 
@@ -118,9 +128,11 @@ Use it when:
 Use this as a debugging and inspection tool.
 
 What it does:
+
 - Compares two schema sources and prints SQL or a diff summary
 
 Use it when:
+
 - `migrate dev` is failing and you want to inspect the SQL manually
 - You want to compare the current schema with the database
 - You want to understand what Prisma thinks changed before applying anything
@@ -139,14 +151,17 @@ npx prisma migrate diff \
 Use this only in development when you intentionally want to wipe and rebuild the database from migrations.
 
 What it does:
+
 - Resets the database
 - Reapplies all migrations from scratch
 
 Use it when:
+
 - Your local dev database is disposable
 - Migration history is broken and you want a clean reset
 
 Do not use it for:
+
 - Staging
 - Production
 - Any database with data you care about

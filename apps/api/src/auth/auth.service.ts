@@ -1,9 +1,6 @@
 import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import {
-  authTokenClaimsSchema,
-  type RuntimeAppEnv,
-} from "@repo/validation";
+import { authTokenClaimsSchema, type RuntimeAppEnv } from "@repo/validation";
 import { createPublicKey, type JsonWebKey } from "node:crypto";
 import type { JwtHeader, JwtPayload, SigningKeyCallback } from "jsonwebtoken";
 import { verify } from "jsonwebtoken";
@@ -48,18 +45,23 @@ export class AuthService {
 
     try {
       payload = await new Promise<JwtPayload | string>((resolve, reject) => {
-        verify(token, this.getSigningKey, {
-          algorithms: ["RS256"],
-          audience: this.audience,
-          issuer: this.issuer,
-        }, (error, decoded) => {
-          if (error) {
-            reject(error);
-            return;
-          }
+        verify(
+          token,
+          this.getSigningKey,
+          {
+            algorithms: ["RS256"],
+            audience: this.audience,
+            issuer: this.issuer,
+          },
+          (error, decoded) => {
+            if (error) {
+              reject(error);
+              return;
+            }
 
-          resolve(decoded ?? "");
-        });
+            resolve(decoded ?? "");
+          },
+        );
       });
     } catch {
       throw new UnauthorizedException("Invalid access token.");

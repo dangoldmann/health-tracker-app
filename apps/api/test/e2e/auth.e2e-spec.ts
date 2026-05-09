@@ -71,7 +71,7 @@ describe("Auth E2E", () => {
     process.env.SUPABASE_JWKS_URL =
       "https://project.supabase.co/auth/v1/.well-known/jwks.json";
 
-      const moduleRef = await Test.createTestingModule({
+    const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
     })
       .overrideProvider(PrismaService)
