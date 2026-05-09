@@ -65,16 +65,13 @@ describe("Auth E2E", () => {
     process.env.DATABASE_URL =
       process.env.DATABASE_URL ??
       "postgresql://postgres:postgres@localhost:5432/health_tracker";
-    process.env.DIRECT_URL =
-      process.env.DIRECT_URL ??
-      "postgresql://postgres:postgres@localhost:5432/health_tracker";
     process.env.SUPABASE_URL = "https://project.supabase.co";
     process.env.SUPABASE_JWT_AUDIENCE = "authenticated";
     process.env.SUPABASE_JWT_ISSUER = "https://project.supabase.co/auth/v1";
     process.env.SUPABASE_JWKS_URL =
       "https://project.supabase.co/auth/v1/.well-known/jwks.json";
 
-    const moduleRef = await Test.createTestingModule({
+      const moduleRef = await Test.createTestingModule({
       imports: [AppModule],
     })
       .overrideProvider(PrismaService)

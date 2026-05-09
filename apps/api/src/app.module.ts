@@ -1,6 +1,6 @@
 import { Module } from "@nestjs/common";
 import { ConfigModule } from "@nestjs/config";
-import { envSchema } from "@repo/validation";
+import { runtimeEnvSchema } from "@repo/validation";
 
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
@@ -12,7 +12,7 @@ import { PrismaModule } from "./prisma/prisma.module";
     ConfigModule.forRoot({
       isGlobal: true,
       ignoreEnvFile: false,
-      validate: (config) => envSchema.parse(config),
+      validate: (config) => runtimeEnvSchema.parse(config),
     }),
     PrismaModule,
     AuthModule,

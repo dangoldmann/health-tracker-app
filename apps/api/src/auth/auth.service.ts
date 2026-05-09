@@ -1,6 +1,9 @@
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { Inject, Injectable, UnauthorizedException } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { authTokenClaimsSchema, type AppEnv } from "@repo/validation";
+import {
+  authTokenClaimsSchema,
+  type RuntimeAppEnv,
+} from "@repo/validation";
 import { createPublicKey, type JsonWebKey } from "node:crypto";
 import type { JwtHeader, JwtPayload, SigningKeyCallback } from "jsonwebtoken";
 import { verify } from "jsonwebtoken";
@@ -18,7 +21,10 @@ export class AuthService {
   private readonly jwksUrl: string;
   private readonly publicKeyCache = new Map<string, string>();
 
-  constructor(configService: ConfigService<AppEnv, true>) {
+  constructor(
+    @Inject(ConfigService)
+    configService: ConfigService<RuntimeAppEnv, true>,
+  ) {
     const supabaseUrl = configService.getOrThrow("SUPABASE_URL", {
       infer: true,
     });

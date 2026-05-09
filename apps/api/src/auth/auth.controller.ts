@@ -1,4 +1,4 @@
-import { Controller, Get, UseGuards } from "@nestjs/common";
+import { Controller, Get, Inject, UseGuards } from "@nestjs/common";
 
 import { UsersService } from "../users/users.service";
 import { User } from "./decorators/user.decorator";
@@ -8,7 +8,9 @@ import type { AuthenticatedUser } from "./interfaces/authenticated-user.interfac
 
 @Controller("auth")
 export class AuthController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    @Inject(UsersService) private readonly usersService: UsersService,
+  ) {}
 
   @Get("me")
   @UseGuards(AuthGuard)
