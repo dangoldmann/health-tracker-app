@@ -10,6 +10,10 @@ This is a Turborepo monorepo for a health tracker app.
 - `packages/*`: shared packages
 - `docs/`: project documentation
 
+## Database Conventions
+
+- Always add database columns using `snake_case`.
+
 ## Main Goal
 
 The app helps users keep track of recurring health check-ins with their doctors, including annual or period-based check-ins, and manage tracking for their own profiles as well as their kids and/or parents.
