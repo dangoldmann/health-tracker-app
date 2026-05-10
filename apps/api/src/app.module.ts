@@ -5,6 +5,7 @@ import { runtimeEnvSchema } from "@repo/validation";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { AuthModule } from "./auth/auth.module";
+import { OnboardingModule } from "./onboarding/onboarding.module";
 import { PrismaModule } from "./prisma/prisma.module";
 
 @Module({
@@ -16,6 +17,7 @@ import { PrismaModule } from "./prisma/prisma.module";
     }),
     PrismaModule,
     AuthModule,
+    OnboardingModule,
   ],
   controllers: [AppController],
   providers: [AppService],

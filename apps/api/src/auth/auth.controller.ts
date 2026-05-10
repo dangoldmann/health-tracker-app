@@ -17,7 +17,7 @@ export class AuthController {
   async getMe(
     @User() authenticatedUser: AuthenticatedUser,
   ): Promise<GetMeResponseDto> {
-    const user = await this.usersService.findById(authenticatedUser.id);
+    const user = await this.usersService.findByAuthUserId(authenticatedUser.id);
 
     return GetMeResponseDto.from({
       id: authenticatedUser.id,

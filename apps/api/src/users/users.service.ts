@@ -15,4 +15,12 @@ export class UsersService {
       },
     });
   }
+
+  findByAuthUserId(authUserId: string) {
+    return this.prismaService.user.findUnique({
+      where: {
+        authUserId,
+      },
+    });
+  }
 }

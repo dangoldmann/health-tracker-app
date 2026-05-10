@@ -11,10 +11,94 @@ datasource db {
   provider = "postgresql"
 }
 
+enum ProfileRelationship {
+  SELF
+  PARENT
+  CHILD
+}
+
+enum BiologicalSex {
+  MALE
+  FEMALE
+  OTHER
+}
+
 model User {
-  id        String   @id @db.Uuid
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String         @id @db.Uuid
+  authUserId    String         @unique @map("auth_user_id") @db.Uuid
+  email         String?
+  expoPushToken String?        @map("expo_push_token")
+  createdAt     DateTime       @default(now()) @map("created_at")
+  updatedAt     DateTime       @updatedAt @map("updated_at")
+  profiles      UserProfile[]
 
   @@map("users")
+}
+
+model Profile {
+  id            String              @id @db.Uuid
+  name          String
+  relationship  ProfileRelationship
+  birthDate     DateTime            @map("birth_date") @db.Date
+  biologicalSex BiologicalSex?      @map("biological_sex")
+  healthInfo    Json                @map("health_info") @db.JsonB
+  createdAt     DateTime            @default(now()) @map("created_at")
+  updatedAt     DateTime            @updatedAt @map("updated_at")
+  users         UserProfile[]
+  checkups      ProfileCheckup[]
+
+  @@map("profiles")
+}
+
+model UserProfile {
+  id        String   @id @db.Uuid
+  userId    String   @map("user_id") @db.Uuid
+  profileId String   @map("profile_id") @db.Uuid
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  profile   Profile  @relation(fields: [profileId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, profileId])
+  @@map("users_profiles")
+}
+
+model CheckupType {
+  id              String           @id @db.Uuid
+  slug            String           @unique
+  name            String
+  isActive        Boolean          @default(true) @map("is_active")
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+  profileCheckups ProfileCheckup[]
+
+  @@map("checkup_types")
+}
+
+model ProfileCheckup {
+  id            String          @id @db.Uuid
+  profileId     String          @map("profile_id") @db.Uuid
+  checkupTypeId String          @map("checkup_type_id") @db.Uuid
+  frequencyDays Int             @map("frequency_days")
+  createdAt     DateTime        @default(now()) @map("created_at")
+  updatedAt     DateTime        @updatedAt @map("updated_at")
+  profile       Profile         @relation(fields: [profileId], references: [id], onDelete: Cascade)
+  checkupType   CheckupType     @relation(fields: [checkupTypeId], references: [id], onDelete: Restrict)
+  records       CheckupRecord[]
+
+  @@unique([profileId, checkupTypeId])
+  @@map("profile_checkups")
+}
+
+model CheckupRecord {
+  id               String         @id @db.Uuid
+  profileCheckupId String         @map("profile_checkup_id") @db.Uuid
+  performedAt      DateTime       @map("performed_at") @db.Date
+  comments         String?
+  doctorNotes      String?        @map("doctor_notes")
+  createdAt        DateTime       @default(now()) @map("created_at")
+  updatedAt        DateTime       @updatedAt @map("updated_at")
+  profileCheckup   ProfileCheckup @relation(fields: [profileCheckupId], references: [id], onDelete: Cascade)
+
+  @@map("checkup_records")
 }
