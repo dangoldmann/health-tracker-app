@@ -259,7 +259,7 @@ describe("Onboarding E2E", () => {
         expect(body.issues).toEqual(
           expect.arrayContaining([
             expect.objectContaining({
-              path: "healthInfo.riskFactors",
+              path: "profiles.0.healthInfo.riskFactors",
             }),
           ]),
         );
