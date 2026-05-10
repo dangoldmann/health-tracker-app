@@ -20,6 +20,7 @@ npm run lint --workspace=api
 npm run test:unit --workspace=api
 npm run test:integration --workspace=api
 npm run test:e2e --workspace=api
+npm run prisma:seed:checkup-types --workspace=api
 ```
 
 ## Environment
@@ -52,6 +53,7 @@ In this repo, that usually means:
 ```bash
 npm run prisma:migrate:dev --workspace=api -- --name your_change_name
 npm run prisma:generate --workspace=api
+npm run prisma:seed:checkup-types --workspace=api
 npm run test:unit --workspace=api
 npm run test:integration --workspace=api
 npm run test:e2e --workspace=api
@@ -107,6 +109,14 @@ Use it when:
 Do not use it for:
 
 - Creating new migrations
+
+### `npm run prisma:seed:checkup-types --workspace=api`
+
+Use this after applying migrations when you need the onboarding checkup catalog available in the database.
+
+What it does:
+
+- Upserts the canonical `checkup_types` rows used by onboarding request validation and persistence
 
 ### `npx prisma migrate status --config apps/api/prisma.config.ts`
 
