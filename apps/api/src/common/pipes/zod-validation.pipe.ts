@@ -28,6 +28,7 @@ interface ZodSchemaLike<T> {
 export class ZodValidationPipe<T> implements PipeTransform<unknown, T> {
   constructor(private readonly schema: ZodSchemaLike<T>) {}
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   transform(value: unknown, _metadata: ArgumentMetadata): T {
     const result = this.schema.safeParse(value);
 

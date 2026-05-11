@@ -18,6 +18,20 @@ import request from "supertest";
 import { AppModule } from "../../src/app.module";
 import { PrismaService } from "../../src/prisma/prisma.service";
 
+type ErrorIssue = {
+  path: string;
+};
+
+type ValidationErrorBody = {
+  message: string;
+  issues: ErrorIssue[];
+};
+
+type FinalizeResponseBody = {
+  status: string;
+  alreadyFinalized: boolean;
+};
+
 describe("Onboarding E2E", () => {
   let app: INestApplication;
   let privateKey: string;
@@ -254,7 +268,7 @@ describe("Onboarding E2E", () => {
         ],
       })
       .expect(400)
-      .expect(({ body }) => {
+      .expect(({ body }: { body: ValidationErrorBody }) => {
         expect(body.message).toBe("Validation failed.");
         expect(body.issues).toEqual(
           expect.arrayContaining([
@@ -303,7 +317,7 @@ describe("Onboarding E2E", () => {
         ],
       })
       .expect(400)
-      .expect(({ body }) => {
+      .expect(({ body }: { body: ValidationErrorBody }) => {
         expect(body.issues).toEqual(
           expect.arrayContaining([
             expect.objectContaining({
@@ -452,7 +466,7 @@ describe("Onboarding E2E", () => {
         ],
       })
       .expect(200)
-      .expect(({ body }) => {
+      .expect(({ body }: { body: FinalizeResponseBody }) => {
         expect(body.status).toBe("existing");
         expect(body.alreadyFinalized).toBe(true);
       });
