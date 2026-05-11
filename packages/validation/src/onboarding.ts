@@ -136,7 +136,7 @@ export const finalizeOnboardingRequestSchema = z.object({
         ctx.addIssue({
           code: "custom",
           message: "Only one SELF profile can be submitted.",
-          path: ["profiles"],
+          path: [],
         });
       }
     }),
