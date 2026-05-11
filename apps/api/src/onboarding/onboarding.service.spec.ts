@@ -51,8 +51,8 @@ describe("OnboardingService", () => {
       email: "user@example.com",
       expoPushToken: "ExponentPushToken[abc]",
     });
-    transactionMock.user.update.mockImplementation(
-      () => Promise.resolve({
+    transactionMock.user.update.mockImplementation(() =>
+      Promise.resolve({
         id: "app-user-id",
         authUserId: "auth-user-id",
         email: "updated@example.com",

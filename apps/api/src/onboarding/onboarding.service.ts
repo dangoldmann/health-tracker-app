@@ -1,8 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-} from "@nestjs/common";
+import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import type { AuthenticatedUser } from "../auth/interfaces/authenticated-user.interface";
 import { PrismaService } from "../prisma/prisma.service";
 import type {

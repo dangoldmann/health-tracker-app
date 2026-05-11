@@ -4,9 +4,7 @@ import {
   type ProfileCheckupInput,
 } from "@repo/validation";
 
-export class FinalizeOnboardingRequestDto
-  implements FinalizeOnboardingRequest
-{
+export class FinalizeOnboardingRequestDto implements FinalizeOnboardingRequest {
   readonly expoPushToken?: string;
   readonly profiles!: OnboardingProfileInput[];
 }

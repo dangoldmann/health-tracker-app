@@ -116,11 +116,10 @@ export const childProfileInputSchema = baseProfileInputSchema.extend({
   healthInfo: childHealthInfoSchema,
 });
 
-export const onboardingProfileInputSchema = z.discriminatedUnion("relationship", [
-  selfProfileInputSchema,
-  parentProfileInputSchema,
-  childProfileInputSchema,
-]);
+export const onboardingProfileInputSchema = z.discriminatedUnion(
+  "relationship",
+  [selfProfileInputSchema, parentProfileInputSchema, childProfileInputSchema],
+);
 
 export const finalizeOnboardingRequestSchema = z.object({
   expoPushToken: z.string().trim().min(1).max(255).optional(),
@@ -147,7 +146,9 @@ export type BiologicalSex = z.infer<typeof biologicalSexSchema>;
 export type CheckupTypeSlug = z.infer<typeof checkupTypeSlugSchema>;
 export type CheckupRecordInput = z.infer<typeof checkupRecordInputSchema>;
 export type ProfileCheckupInput = z.infer<typeof profileCheckupInputSchema>;
-export type OnboardingProfileInput = z.infer<typeof onboardingProfileInputSchema>;
+export type OnboardingProfileInput = z.infer<
+  typeof onboardingProfileInputSchema
+>;
 export type FinalizeOnboardingRequest = z.infer<
   typeof finalizeOnboardingRequestSchema
 >;

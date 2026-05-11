@@ -72,7 +72,9 @@ export class FinalizeOnboardingResponseDto {
     );
   }
 
-  static from(input: FinalizeOnboardingResponseInput): FinalizeOnboardingResponseDto {
+  static from(
+    input: FinalizeOnboardingResponseInput,
+  ): FinalizeOnboardingResponseDto {
     return new FinalizeOnboardingResponseDto(input);
   }
 }
