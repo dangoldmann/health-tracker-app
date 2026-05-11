@@ -26,3 +26,7 @@ The app helps users keep track of recurring health check-ins with their doctors,
 - [`docs/design/design-system.md`](./docs/design/design-system.md)
 - [`docs/product/product-requirements.md`](./docs/product/product-requirements.md)
 - [`docs/product/dynamic-onboarding-structure.md`](./docs/product/dynamic-onboarding-structure.md)
+
+## Workflow
+
+- Always run `npm run format` after making changes to the codebase.
