@@ -1,4 +1,8 @@
 {
   "extends": "./tsconfig.json",
+  "compilerOptions": {
+    // Rewrites all emitted relative .ts imports to .js in dist; needed here because Prisma's generated client kept .ts specifiers that broke node at runtime.
+    "rewriteRelativeImportExtensions": true
+  },
   "exclude": ["node_modules", "dist", "**/*.spec.ts"]
 }

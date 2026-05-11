@@ -3,9 +3,7 @@
   "compilerOptions": {
     "incremental": false,
     "outDir": "./dist",
-    "rootDir": "./src",
-    // Rewrites all emitted relative .ts imports to .js in dist; needed here because Prisma's generated client kept .ts specifiers that broke node at runtime.
-    "rewriteRelativeImportExtensions": true
+    "rootDir": "./src"
   },
   "include": ["src/**/*.ts"],
   "exclude": ["node_modules", "dist", "**/*.spec.ts"]
