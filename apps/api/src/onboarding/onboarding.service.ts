@@ -2,12 +2,14 @@ import { BadRequestException, Inject, Injectable } from "@nestjs/common";
 import type { AuthenticatedUser } from "../auth/interfaces/authenticated-user.interface";
 import { PrismaService } from "../prisma/prisma.service";
 import type {
+  CheckupTypeSlug,
   FinalizeOnboardingRequest,
+  FinalizeOnboardingProfileResponse,
+  FinalizeOnboardingResponse,
   OnboardingProfileInput,
 } from "@repo/validation";
-import { ProfileRelationship, type Prisma } from "../generated/prisma/client";
+import { type Prisma } from "../generated/prisma/client";
 import { randomUUID } from "node:crypto";
-import { FinalizeOnboardingResponseDto } from "./dto/finalize-onboarding-response.dto";
 
 @Injectable()
 export class OnboardingService {
@@ -18,7 +20,7 @@ export class OnboardingService {
   async finalize(
     authenticatedUser: AuthenticatedUser,
     request: FinalizeOnboardingRequest,
-  ): Promise<FinalizeOnboardingResponseDto> {
+  ): Promise<FinalizeOnboardingResponse> {
     return this.prismaService.$transaction(async (transaction) => {
       let user = await transaction.user.findUnique({
         where: {
@@ -59,12 +61,12 @@ export class OnboardingService {
           user.id,
         );
 
-        return FinalizeOnboardingResponseDto.from({
+        return {
           userId: user.id,
           status: "existing",
           alreadyFinalized: true,
           profiles: existingSummary,
-        });
+        };
       }
 
       const checkupTypesBySlug = await this.loadCheckupTypesBySlug(
@@ -86,12 +88,12 @@ export class OnboardingService {
         user.id,
       );
 
-      return FinalizeOnboardingResponseDto.from({
+      return {
         userId: user.id,
         status: "created",
         alreadyFinalized: false,
         profiles: createdSummary,
-      });
+      };
     });
   }
 
@@ -195,14 +197,7 @@ export class OnboardingService {
   private async getUserOnboardingSummary(
     transaction: Prisma.TransactionClient,
     userId: string,
-  ): Promise<
-    Array<{
-      id: string;
-      name: string;
-      relationship: ProfileRelationship;
-      checkups: Array<{ id: string; checkupTypeSlug: string }>;
-    }>
-  > {
+  ): Promise<FinalizeOnboardingProfileResponse[]> {
     const links = await transaction.userProfile.findMany({
       where: {
         userId,
@@ -240,7 +235,7 @@ export class OnboardingService {
       relationship: profile.relationship,
       checkups: profile.checkups.map((checkup) => ({
         id: checkup.id,
-        checkupTypeSlug: checkup.checkupType.slug,
+        checkupTypeSlug: checkup.checkupType.slug as CheckupTypeSlug,
       })),
     }));
   }

@@ -144,3 +144,22 @@ export const finalizeOnboardingRequestSchema = z.object({
       }
     }),
 });
+
+export const finalizeOnboardingProfileCheckupResponseSchema = z.object({
+  id: z.string().trim().min(1),
+  checkupTypeSlug: checkupTypeSlugSchema,
+});
+
+export const finalizeOnboardingProfileResponseSchema = z.object({
+  id: z.string().trim().min(1),
+  name: z.string().trim().min(1).max(120),
+  relationship: profileRelationshipSchema,
+  checkups: z.array(finalizeOnboardingProfileCheckupResponseSchema),
+});
+
+export const finalizeOnboardingResponseSchema = z.object({
+  userId: z.string().trim().min(1),
+  status: z.enum(["created", "existing"]),
+  alreadyFinalized: z.boolean(),
+  profiles: z.array(finalizeOnboardingProfileResponseSchema),
+});

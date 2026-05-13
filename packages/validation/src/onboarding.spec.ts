@@ -4,6 +4,7 @@ import { describe, it } from "node:test";
 import {
   buildOnboardingQueue,
   finalizeOnboardingRequestSchema,
+  finalizeOnboardingResponseSchema,
   getRecommendedCheckupsForProfile,
   type FinalizeOnboardingRequest,
   type OnboardingProfileInput,
@@ -148,6 +149,25 @@ describe("onboarding validation", () => {
       performedAt: "2026-01-02",
     });
     assert.equal(result.profiles[0].checkups[1].initialRecord, undefined);
+  });
+
+  it("accepts a valid finalize onboarding response payload", () => {
+    const result = finalizeOnboardingResponseSchema.parse({
+      userId: "user_123",
+      status: "created",
+      alreadyFinalized: false,
+      profiles: [
+        {
+          id: "profile_123",
+          name: "Jane Doe",
+          relationship: "SELF",
+          checkups: [{ id: "checkup_123", checkupTypeSlug: "dentistry" }],
+        },
+      ],
+    });
+
+    assert.equal(result.userId, "user_123");
+    assert.equal(result.profiles[0]?.checkups[0]?.checkupTypeSlug, "dentistry");
   });
 });
 

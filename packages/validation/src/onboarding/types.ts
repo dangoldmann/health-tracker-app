@@ -7,6 +7,9 @@ import {
   profileCheckupInputSchema,
   onboardingProfileInputSchema,
   finalizeOnboardingRequestSchema,
+  finalizeOnboardingProfileCheckupResponseSchema,
+  finalizeOnboardingProfileResponseSchema,
+  finalizeOnboardingResponseSchema,
 } from "./schemas";
 
 export type OnboardingQueueEntry = {
@@ -48,4 +51,13 @@ export type OnboardingProfileInput = z.infer<
 >;
 export type FinalizeOnboardingRequest = z.infer<
   typeof finalizeOnboardingRequestSchema
+>;
+export type FinalizeOnboardingProfileCheckupResponse = z.infer<
+  typeof finalizeOnboardingProfileCheckupResponseSchema
+>;
+export type FinalizeOnboardingProfileResponse = z.infer<
+  typeof finalizeOnboardingProfileResponseSchema
+>;
+export type FinalizeOnboardingResponse = z.infer<
+  typeof finalizeOnboardingResponseSchema
 >;
