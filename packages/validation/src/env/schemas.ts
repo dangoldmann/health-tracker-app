@@ -1,4 +1,4 @@
-import { z } from "zod";
+import z from "zod";
 
 const baseEnvSchema = z.object({
   NODE_ENV: z
@@ -18,6 +18,3 @@ export const runtimeEnvSchema = baseEnvSchema;
 export const envSchema = baseEnvSchema.extend({
   DIRECT_URL: z.url(),
 });
-
-export type AppEnv = z.infer<typeof envSchema>;
-export type RuntimeAppEnv = z.infer<typeof runtimeEnvSchema>;

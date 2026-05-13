@@ -11,5 +11,3 @@ export const authTokenClaimsSchema = z.object({
   app_metadata: z.record(z.string(), z.unknown()).optional(),
   user_metadata: z.record(z.string(), z.unknown()).optional(),
 });
-
-export type AuthTokenClaims = z.infer<typeof authTokenClaimsSchema>;

@@ -1,37 +1,19 @@
-import { z } from "zod";
+import z from "zod";
+import {
+  biologicalSexValues,
+  profileRelationshipValues,
+  checkupTypeCatalog,
+  MAX_CHILD_PROFILES,
+  MAX_PARENT_PROFILES,
+  MAX_SELF_PROFILES,
+} from "./constants";
 
-export const profileRelationshipValues = ["SELF", "PARENT", "CHILD"] as const;
-export const biologicalSexValues = ["MALE", "FEMALE", "OTHER"] as const;
-
-export const checkupTypeCatalog = [
-  {
-    slug: "cardiology",
-    name: "Cardiology",
-  },
-  {
-    slug: "dentistry",
-    name: "Dentistry",
-  },
-  {
-    slug: "dermatology",
-    name: "Dermatology",
-  },
-  {
-    slug: "gynecology",
-    name: "Gynecology",
-  },
-  {
-    slug: "ophthalmology",
-    name: "Ophthalmology",
-  },
-  {
-    slug: "pediatrics",
-    name: "Pediatrics",
-  },
-] as const;
+const isoDateSchema = z.iso.date();
 
 export const profileRelationshipSchema = z.enum(profileRelationshipValues);
+
 export const biologicalSexSchema = z.enum(biologicalSexValues);
+
 export const checkupTypeSlugSchema = z.enum(
   checkupTypeCatalog.map((checkupType) => checkupType.slug) as [
     (typeof checkupTypeCatalog)[number]["slug"],
@@ -39,7 +21,17 @@ export const checkupTypeSlugSchema = z.enum(
   ],
 );
 
-const isoDateSchema = z.iso.date();
+export const checkupRecordInputSchema = z.object({
+  performedAt: isoDateSchema,
+  comments: z.string().trim().min(1).max(1_000).optional(),
+  doctorNotes: z.string().trim().min(1).max(1_000).optional(),
+});
+
+export const profileCheckupInputSchema = z.object({
+  checkupTypeSlug: checkupTypeSlugSchema,
+  frequencyDays: z.number().int().positive(),
+  initialRecord: checkupRecordInputSchema.optional(),
+});
 
 const selfHealthInfoSchema = z.object({
   riskFactors: z.object({
@@ -62,18 +54,6 @@ const childHealthInfoSchema = z.object({
     hasAllergies: z.boolean(),
     hasAsthma: z.boolean(),
   }),
-});
-
-export const checkupRecordInputSchema = z.object({
-  performedAt: isoDateSchema,
-  comments: z.string().trim().min(1).max(1_000).optional(),
-  doctorNotes: z.string().trim().min(1).max(1_000).optional(),
-});
-
-export const profileCheckupInputSchema = z.object({
-  checkupTypeSlug: checkupTypeSlugSchema,
-  frequencyDays: z.number().int().positive(),
-  initialRecord: checkupRecordInputSchema.optional(),
 });
 
 const baseProfileInputSchema = z.object({
@@ -131,24 +111,36 @@ export const finalizeOnboardingRequestSchema = z.object({
         (profile) => profile.relationship === "SELF",
       );
 
-      if (selfProfiles.length > 1) {
+      if (selfProfiles.length > MAX_SELF_PROFILES) {
         ctx.addIssue({
           code: "custom",
-          message: "Only one SELF profile can be submitted.",
+          message: `Only ${MAX_SELF_PROFILES} SELF profile can be submitted.`,
+          path: [],
+        });
+      }
+
+      const childProfiles = profiles.filter(
+        (profile) => profile.relationship === "CHILD",
+      );
+
+      if (childProfiles.length > MAX_CHILD_PROFILES) {
+        ctx.addIssue({
+          code: "custom",
+          message: `At most ${MAX_CHILD_PROFILES} CHILD profiles can be submitted.`,
+          path: [],
+        });
+      }
+
+      const parentProfiles = profiles.filter(
+        (profile) => profile.relationship === "PARENT",
+      );
+
+      if (parentProfiles.length > MAX_PARENT_PROFILES) {
+        ctx.addIssue({
+          code: "custom",
+          message: `At most ${MAX_PARENT_PROFILES} PARENT profiles can be submitted.`,
           path: [],
         });
       }
     }),
 });
-
-export type ProfileRelationship = z.infer<typeof profileRelationshipSchema>;
-export type BiologicalSex = z.infer<typeof biologicalSexSchema>;
-export type CheckupTypeSlug = z.infer<typeof checkupTypeSlugSchema>;
-export type CheckupRecordInput = z.infer<typeof checkupRecordInputSchema>;
-export type ProfileCheckupInput = z.infer<typeof profileCheckupInputSchema>;
-export type OnboardingProfileInput = z.infer<
-  typeof onboardingProfileInputSchema
->;
-export type FinalizeOnboardingRequest = z.infer<
-  typeof finalizeOnboardingRequestSchema
->;
