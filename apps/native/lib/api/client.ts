@@ -1,10 +1,4 @@
-import type {
-  FinalizeOnboardingRequest,
-  FinalizeOnboardingResponse,
-  GetMeResponse,
-} from "@repo/validation";
-
-import { readNativeEnv } from "./env";
+import { readNativeEnv } from "../env";
 
 export class ApiError extends Error {
   constructor(
@@ -42,7 +36,7 @@ async function parseResponseBody(response: Response) {
   }
 }
 
-async function apiRequest<TResponse>(
+export async function apiRequest<TResponse>(
   path: string,
   { body, method = "GET", token }: ApiRequestOptions,
 ): Promise<TResponse> {
@@ -69,19 +63,4 @@ async function apiRequest<TResponse>(
   }
 
   return responseBody as TResponse;
-}
-
-export function getMe(token: string) {
-  return apiRequest<GetMeResponse>("/auth/me", { token });
-}
-
-export function finalizeOnboarding(
-  token: string,
-  request: FinalizeOnboardingRequest,
-) {
-  return apiRequest<FinalizeOnboardingResponse>("/onboarding/finalize", {
-    body: request,
-    method: "POST",
-    token,
-  });
 }
