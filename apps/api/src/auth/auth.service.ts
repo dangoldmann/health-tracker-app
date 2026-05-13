@@ -49,7 +49,7 @@ export class AuthService {
           token,
           this.getSigningKey,
           {
-            algorithms: ["RS256"],
+            algorithms: ["ES256"],
             audience: this.audience,
             issuer: this.issuer,
           },
