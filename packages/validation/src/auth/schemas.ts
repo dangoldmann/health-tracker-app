@@ -11,3 +11,15 @@ export const authTokenClaimsSchema = z.object({
   app_metadata: z.record(z.string(), z.unknown()).optional(),
   user_metadata: z.record(z.string(), z.unknown()).optional(),
 });
+
+export const appUserResponseSchema = z.object({
+  id: z.string().trim().min(1),
+  createdAt: z.iso.datetime(),
+  updatedAt: z.iso.datetime(),
+});
+
+export const getMeResponseSchema = z.object({
+  id: z.string().trim().min(1),
+  email: z.email().nullable(),
+  user: appUserResponseSchema.nullable(),
+});

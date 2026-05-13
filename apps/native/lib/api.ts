@@ -1,6 +1,7 @@
 import type {
   FinalizeOnboardingRequest,
   FinalizeOnboardingResponse,
+  GetMeResponse,
 } from "@repo/validation";
 
 import { readNativeEnv } from "./env";
@@ -15,20 +16,6 @@ export class ApiError extends Error {
     this.name = "ApiError";
   }
 }
-
-export type AppUser = {
-  createdAt?: string;
-  email?: string | null;
-  id: string;
-  supabaseAuthUserId?: string;
-  updatedAt?: string;
-};
-
-export type GetMeResponse = {
-  email: string | null;
-  id: string;
-  user: AppUser | null;
-};
 
 type ApiRequestOptions = {
   body?: unknown;
