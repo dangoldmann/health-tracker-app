@@ -1,63 +1,90 @@
-import { StyleSheet } from "react-native";
+import { useEffect } from "react";
 import { useRouter } from "expo-router";
 
-import { AuthButton } from "../components/auth-button";
-import { Screen } from "../components/screen";
+import { LoadingState } from "../components/app-state";
+import {
+  AppButton,
+  Card,
+  ErrorText,
+  StepScreen,
+} from "../components/onboarding-ui";
 import { Text, View } from "../components/ui";
+import { useAuthBootstrap } from "../lib/auth-queries";
+import { useOnboardingStore } from "../lib/onboarding/store";
+import { getResumeOnboardingRoute } from "../lib/onboarding/routes";
 
-export default function LandingPage() {
+export default function WelcomeScreen() {
   const router = useRouter();
+  const { isLoading, me, meError, session } = useAuthBootstrap();
+  const profiles = useOnboardingStore((state) => state.profiles);
+  
+  useEffect(() => {
+    if (isLoading || !session) {
+      return;
+    }
+
+    if (me?.user) {
+      router.replace("/home");
+      return;
+    }
+
+    if (me?.user === null) {
+      router.replace(getResumeOnboardingRoute(profiles));
+    }
+  }, [isLoading, me?.user, profiles, router, session]);
+
+  if (meError) {
+    return (
+      <StepScreen title="Session check failed">
+        <ErrorText>
+          {meError instanceof Error ? meError.message : "Unable to check user."}
+        </ErrorText>
+        <AppButton
+          label="Go to login"
+          onPress={() => router.replace("/login")}
+        />
+      </StepScreen>
+    );
+  }
+
+  if (isLoading || session) {
+    return <LoadingState label="Checking your session" />;
+  }
 
   return (
-    <Screen>
-      <View className="flex-1 overflow-hidden">
-        <View className="absolute inset-0">
-          <View className="absolute -right-24 top-6 h-56 w-56 rounded-full bg-[#DDEFEA]" />
-          <View className="absolute right-10 top-16 h-24 w-px bg-[#D7E7E1]" />
-          <View className="absolute right-10 top-40 h-2 w-2 rounded-full bg-[#D7E7E1]" />
-
-          <View className="absolute -left-40 bottom-16 h-72 w-72 rounded-full border border-[#DDE6F4]" />
-          <View className="absolute left-8 bottom-52 h-px w-24 bg-[#DDE6F4]" />
-
-          <View className="absolute left-10 top-24 h-14 w-14 rounded-full border border-[#E6E1D8]" />
-          <View className="absolute left-20 top-36 h-px w-14 bg-[#E6E1D8]" />
-        </View>
-
-        <View className="flex-1 px-5">
-          <View className="flex-1 items-center justify-center">
-            <View className="items-center gap-1">
-              <Text style={styles.title}>Health</Text>
-              <Text style={styles.title}>Guard</Text>
-            </View>
+    <StepScreen
+      subtitle="Build a simple check-in rhythm for yourself and the family members you care for."
+      title="Health tracking that starts with your real household."
+    >
+      <View className="gap-5 pt-4">
+        <Card>
+          <View className="gap-4">
+            <Text className="text-xs font-semibold uppercase tracking-[2px] text-[#6F7F78]">
+              Health Guard
+            </Text>
+            <Text className="font-serif text-[44px] font-bold leading-[46px] tracking-[-2px] text-[#172421]">
+              A calmer way to remember care.
+            </Text>
+            <Text className="text-base leading-7 text-[#66736D]">
+              Start with a short onboarding flow. We will recommend practical
+              checkups, let you adjust them, then create your account at the
+              end.
+            </Text>
           </View>
+        </Card>
 
-          <View className="w-full gap-4 pb-10">
-            <View className="mx-auto w-full max-w-[320px] gap-4">
-              <AuthButton
-                label="Login"
-                onPress={() => router.push("/login")}
-                variant="primary"
-              />
-              <AuthButton
-                label="Register"
-                onPress={() => router.push("/register")}
-                variant="secondary"
-              />
-            </View>
-          </View>
+        <View className="gap-3">
+          <AppButton
+            label="Start onboarding"
+            onPress={() => router.push("/onboarding/tracking")}
+          />
+          <AppButton
+            label="Login"
+            onPress={() => router.push("/login")}
+            tone="secondary"
+          />
         </View>
       </View>
-    </Screen>
+    </StepScreen>
   );
 }
-
-const styles = StyleSheet.create({
-  title: {
-    color: "#162238",
-    fontFamily: "Georgia",
-    fontSize: 48,
-    fontWeight: "700",
-    letterSpacing: -2.4,
-    lineHeight: 48,
-  },
-});
