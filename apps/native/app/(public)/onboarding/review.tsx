@@ -1,10 +1,10 @@
 import { checkupTypeCatalog } from "@repo/validation";
 import { useRouter } from "expo-router";
 
-import { AppButton, Card, StepScreen } from "../../components/onboarding-ui";
-import { Pressable, Text, View } from "../../components/ui";
-import { getOnboardingProgress } from "../../lib/onboarding/progress";
-import { useOnboardingStore } from "../../lib/onboarding/store";
+import { AppButton, Card, StepScreen } from "../../../components/onboarding-ui";
+import { Pressable, Text, View } from "../../../components/ui";
+import { getOnboardingProgress } from "../../../lib/onboarding/progress";
+import { useOnboardingStore } from "../../../lib/onboarding/store";
 
 export default function GlobalReviewScreen() {
   const router = useRouter();

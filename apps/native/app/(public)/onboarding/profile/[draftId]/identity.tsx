@@ -9,16 +9,16 @@ import {
   ErrorText,
   FormField,
   StepScreen,
-} from "../../../../components/onboarding-ui";
+} from "../../../../../components/onboarding-ui";
 import {
   parseIdentityStep,
   type IdentityStepValues,
-} from "../../../../lib/onboarding/forms";
+} from "../../../../../lib/onboarding/forms";
 import {
   getOnboardingProgress,
   getProfileContextLabel,
-} from "../../../../lib/onboarding/progress";
-import { useOnboardingStore } from "../../../../lib/onboarding/store";
+} from "../../../../../lib/onboarding/progress";
+import { useOnboardingStore } from "../../../../../lib/onboarding/store";
 
 export default function IdentityStepScreen() {
   const router = useRouter();

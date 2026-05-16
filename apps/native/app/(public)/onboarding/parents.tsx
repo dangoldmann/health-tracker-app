@@ -5,8 +5,8 @@ import {
   AppButton,
   ChoiceCard,
   StepScreen,
-} from "../../components/onboarding-ui";
-import { useOnboardingStore } from "../../lib/onboarding/store";
+} from "../../../components/onboarding-ui";
+import { useOnboardingStore } from "../../../lib/onboarding/store";
 
 export default function ParentsCountScreen() {
   const router = useRouter();

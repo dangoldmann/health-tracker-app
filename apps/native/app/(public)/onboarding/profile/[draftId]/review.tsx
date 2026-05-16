@@ -5,16 +5,16 @@ import {
   AppButton,
   Card,
   StepScreen,
-} from "../../../../components/onboarding-ui";
-import { Text, View } from "../../../../components/ui";
+} from "../../../../../components/onboarding-ui";
+import { Text, View } from "../../../../../components/ui";
 import {
   getOnboardingProgress,
   getProfileContextLabel,
-} from "../../../../lib/onboarding/progress";
+} from "../../../../../lib/onboarding/progress";
 import {
   getNextProfileAfter,
   useOnboardingStore,
-} from "../../../../lib/onboarding/store";
+} from "../../../../../lib/onboarding/store";
 
 export default function ProfileReviewScreen() {
   const router = useRouter();

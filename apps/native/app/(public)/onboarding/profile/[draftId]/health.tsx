@@ -5,16 +5,16 @@ import {
   AppButton,
   Card,
   StepScreen,
-} from "../../../../components/onboarding-ui";
-import { Switch, Text, View } from "../../../../components/ui";
+} from "../../../../../components/onboarding-ui";
+import { Switch, Text, View } from "../../../../../components/ui";
 import {
   getOnboardingProgress,
   getProfileContextLabel,
-} from "../../../../lib/onboarding/progress";
+} from "../../../../../lib/onboarding/progress";
 import {
   useOnboardingStore,
   type ProfileHealthDraft,
-} from "../../../../lib/onboarding/store";
+} from "../../../../../lib/onboarding/store";
 
 type ToggleRowProps = {
   label: string;

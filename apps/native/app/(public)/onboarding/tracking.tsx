@@ -5,11 +5,11 @@ import {
   AppButton,
   ChoiceCard,
   StepScreen,
-} from "../../components/onboarding-ui";
+} from "../../../components/onboarding-ui";
 import {
   useOnboardingStore,
   type TrackingSelection,
-} from "../../lib/onboarding/store";
+} from "../../../lib/onboarding/store";
 
 export default function TrackingScreen() {
   const router = useRouter();

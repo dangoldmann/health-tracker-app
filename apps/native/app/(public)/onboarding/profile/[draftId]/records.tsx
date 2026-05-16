@@ -9,13 +9,13 @@ import {
   FormField,
   StepScreen,
   ErrorText,
-} from "../../../../components/onboarding-ui";
-import { Pressable, Text, View } from "../../../../components/ui";
+} from "../../../../../components/onboarding-ui";
+import { Pressable, Text, View } from "../../../../../components/ui";
 import {
   getOnboardingProgress,
   getProfileContextLabel,
-} from "../../../../lib/onboarding/progress";
-import { useOnboardingStore } from "../../../../lib/onboarding/store";
+} from "../../../../../lib/onboarding/progress";
+import { useOnboardingStore } from "../../../../../lib/onboarding/store";
 
 export default function RecordsStepScreen() {
   const router = useRouter();
