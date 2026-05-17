@@ -1,3 +1,4 @@
+import type { GetMeResponse } from "@repo/validation";
 import type { User as AppUser } from "../../generated/prisma/client";
 import { UserResponseDto } from "./user-response.dto";
 
@@ -7,9 +8,9 @@ interface GetMeResponseInput {
   user: AppUser | null;
 }
 
-export class GetMeResponseDto {
-  readonly id: string;
-  readonly email: string | null;
+export class GetMeResponseDto implements GetMeResponse {
+  readonly id: GetMeResponse["id"];
+  readonly email: GetMeResponse["email"];
   readonly user: UserResponseDto | null;
 
   private constructor(input: GetMeResponseInput) {

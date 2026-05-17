@@ -14,6 +14,7 @@ async function bootstrap(): Promise<void> {
   const port = configService.getOrThrow("PORT", { infer: true });
 
   app.setGlobalPrefix(apiPrefix);
+  app.enableCors({ origin: ["http://localhost:8081"] });
 
   await app.listen(port);
 }

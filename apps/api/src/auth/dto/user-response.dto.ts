@@ -1,9 +1,10 @@
+import type { AppUserResponse } from "@repo/validation";
 import type { User as AppUser } from "../../generated/prisma/client";
 
-export class UserResponseDto {
-  readonly id: string;
-  readonly createdAt: string;
-  readonly updatedAt: string;
+export class UserResponseDto implements AppUserResponse {
+  readonly id: AppUserResponse["id"];
+  readonly createdAt: AppUserResponse["createdAt"];
+  readonly updatedAt: AppUserResponse["updatedAt"];
 
   private constructor(user: AppUser) {
     this.id = user.id;

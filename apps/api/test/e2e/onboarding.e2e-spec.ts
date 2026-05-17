@@ -68,8 +68,8 @@ describe("Onboarding E2E", () => {
   };
 
   beforeAll(async () => {
-    const keyPair = generateKeyPairSync("rsa", {
-      modulusLength: 2048,
+    const keyPair = generateKeyPairSync("ec", {
+      namedCurve: "prime256v1",
       privateKeyEncoding: {
         type: "pkcs8",
         format: "pem",
@@ -92,7 +92,7 @@ describe("Onboarding E2E", () => {
                 ...publicJwk,
                 kid: "test-key-id",
                 use: "sig",
-                alg: "RS256",
+                alg: "ES256",
               },
             ],
           }),
@@ -488,7 +488,7 @@ async function signAccessToken(
       },
       privateKey,
       {
-        algorithm: "RS256",
+        algorithm: "ES256",
         keyid: "test-key-id",
         subject: input.sub,
         audience: "authenticated",

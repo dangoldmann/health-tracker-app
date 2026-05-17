@@ -16,6 +16,7 @@
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
+    "test": "tsx --test src/**/*.spec.ts",
     "typecheck": "tsc --noEmit",
     "clean": "rm -rf dist"
   },
@@ -23,6 +24,7 @@
     "@repo/typescript-config": "*",
     "@types/node": "20.19.39",
     "tsup": "8.5.1",
+    "tsx": "^4.21.0",
     "typescript": "5.9.2"
   },
   "dependencies": {
