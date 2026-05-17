@@ -1,14 +1,16 @@
 import assert from "node:assert/strict";
 import { describe, it } from "node:test";
 
+import { buildOnboardingQueue } from "./queue";
+import { getRecommendedCheckupsForProfile } from "./recommendations";
 import {
-  buildOnboardingQueue,
   finalizeOnboardingRequestSchema,
   finalizeOnboardingResponseSchema,
-  getRecommendedCheckupsForProfile,
-  type FinalizeOnboardingRequest,
-  type OnboardingProfileInput,
-} from "./onboarding";
+} from "./schemas";
+import type {
+  FinalizeOnboardingRequest,
+  OnboardingProfileInput,
+} from "./types";
 
 const today = new Date("2026-05-12T12:00:00.000Z");
 
