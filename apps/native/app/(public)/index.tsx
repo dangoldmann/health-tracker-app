@@ -1,55 +1,15 @@
-import { useEffect } from "react";
 import { useRouter } from "expo-router";
 
-import { LoadingState } from "../components/app-state";
 import {
   AppButton,
   Card,
   ErrorText,
   StepScreen,
-} from "../components/onboarding-ui";
-import { Text, View } from "../components/ui";
-import { useAuthBootstrap } from "../lib/auth-queries";
-import { useOnboardingStore } from "../lib/onboarding/store";
-import { getResumeOnboardingRoute } from "../lib/onboarding/routes";
+} from "../../components/onboarding-ui";
+import { Text, View } from "../../components/ui";
 
 export default function WelcomeScreen() {
   const router = useRouter();
-  const { isLoading, me, meError, session } = useAuthBootstrap();
-  const profiles = useOnboardingStore((state) => state.profiles);
-  
-  useEffect(() => {
-    if (isLoading || !session) {
-      return;
-    }
-
-    if (me?.user) {
-      router.replace("/home");
-      return;
-    }
-
-    if (me?.user === null) {
-      router.replace(getResumeOnboardingRoute(profiles));
-    }
-  }, [isLoading, me?.user, profiles, router, session]);
-
-  if (meError) {
-    return (
-      <StepScreen title="Session check failed">
-        <ErrorText>
-          {meError instanceof Error ? meError.message : "Unable to check user."}
-        </ErrorText>
-        <AppButton
-          label="Go to login"
-          onPress={() => router.replace("/login")}
-        />
-      </StepScreen>
-    );
-  }
-
-  if (isLoading || session) {
-    return <LoadingState label="Checking your session" />;
-  }
 
   return (
     <StepScreen

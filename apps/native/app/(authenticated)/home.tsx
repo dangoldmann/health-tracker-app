@@ -1,11 +1,9 @@
-import { useRouter } from "expo-router";
-
-import { AppButton, Card, StepScreen } from "../components/onboarding-ui";
-import { Text, View } from "../components/ui";
-import { getSupabaseClient } from "../lib/supabase";
+import { AppButton, Card, StepScreen } from "../../components/onboarding-ui";
+import { Text, View } from "../../components/ui";
+import { useAuth } from "../../lib/auth";
 
 export default function HomeScreen() {
-  const router = useRouter();
+  const { logout } = useAuth();
 
   return (
     <StepScreen
@@ -24,8 +22,7 @@ export default function HomeScreen() {
           <AppButton
             label="Log out"
             onPress={async () => {
-              await getSupabaseClient().auth.signOut({ scope: "local" });
-              router.replace("/");
+              await logout();
             }}
             tone="secondary"
           />

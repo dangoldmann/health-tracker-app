@@ -1,27 +1,26 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useQueryClient } from "@tanstack/react-query";
 import { Link, useRouter } from "expo-router";
 
-import { getMe } from "../lib/api";
-import { meQueryKey, sessionQueryKey } from "../lib/auth-queries";
-import { authFormSchema, type AuthFormValues } from "../lib/onboarding/forms";
-import { useOnboardingStore } from "../lib/onboarding/store";
-import { getResumeOnboardingRoute } from "../lib/onboarding/routes";
-import { getSupabaseClient } from "../lib/supabase";
+import { getMe } from "../../lib/api";
+import { useAuth } from "../../lib/auth";
+import {
+  authFormSchema,
+  type AuthFormValues,
+} from "../../lib/onboarding/forms";
+import { getSupabaseClient } from "../../lib/supabase";
 import {
   AppButton,
   Card,
   ErrorText,
   FormField,
   StepScreen,
-} from "../components/onboarding-ui";
-import { Text, View } from "../components/ui";
+} from "../../components/onboarding-ui";
+import { Text, View } from "../../components/ui";
 
 export default function LoginScreen() {
   const router = useRouter();
-  const queryClient = useQueryClient();
-  const profiles = useOnboardingStore((state) => state.profiles);
+  const { notice, setAuthenticatedSession } = useAuth();
   const [submissionError, setSubmissionError] = useState<string | null>(null);
   const {
     formState: { errors, isSubmitting },
@@ -66,7 +65,6 @@ export default function LoginScreen() {
     try {
       me = await getMe(session.access_token);
     } catch (requestError) {
-      console.log(requestError);
       setSubmissionError(
         requestError instanceof Error
           ? requestError.message
@@ -75,10 +73,8 @@ export default function LoginScreen() {
       return;
     }
 
-    await queryClient.invalidateQueries({ queryKey: sessionQueryKey });
-    queryClient.setQueryData(meQueryKey, me);
-
-    router.replace(me.user ? "/home" : getResumeOnboardingRoute(profiles));
+    setAuthenticatedSession(session, me);
+    router.replace("/");
   });
 
   return (
@@ -106,6 +102,7 @@ export default function LoginScreen() {
             secureTextEntry
             value={values.password}
           />
+          <ErrorText>{notice}</ErrorText>
           <ErrorText>{submissionError}</ErrorText>
           <AppButton
             disabled={isSubmitting}

@@ -1,6 +1,6 @@
 import { Stack, router } from "expo-router";
 import { HeaderBackButton } from "@react-navigation/elements";
-import { baseStackScreenOptions } from "../../../../lib/navigation";
+import { baseStackScreenOptions } from "../../../../../lib/navigation";
 
 export default function ProfileOnboardingLayout() {
   return (

@@ -4,8 +4,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { DeveloperErrorScreen } from "../components/app-state";
+import { AuthProvider } from "../lib/auth";
 import { getNativeEnvResult } from "../lib/env";
-import { baseStackScreenOptions } from "../lib/navigation";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -25,14 +25,13 @@ const AppLayout = () => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <StatusBar style="dark" />
-      <Stack
-        screenOptions={{
-          ...baseStackScreenOptions,
-        }}
-      >
-        <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-      </Stack>
+      <AuthProvider>
+        <StatusBar style="dark" />
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="(public)" />
+          <Stack.Screen name="(authenticated)" />
+        </Stack>
+      </AuthProvider>
     </QueryClientProvider>
   );
 };

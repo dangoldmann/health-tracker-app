@@ -1,31 +1,32 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
 
+import { getMe } from "../../../lib/api";
 import {
   AppButton,
   Card,
   ErrorText,
   FormField,
   StepScreen,
-} from "../../components/onboarding-ui";
-import { Text, View } from "../../components/ui";
-import { finalizeOnboarding } from "../../lib/api";
-import { meQueryKey, sessionQueryKey } from "../../lib/auth-queries";
+} from "../../../components/onboarding-ui";
+import { Text, View } from "../../../components/ui";
+import { useAuth } from "../../../lib/auth";
+import { finalizeOnboarding } from "../../../lib/api";
 import {
   authFormSchema,
   type AuthFormValues,
-} from "../../lib/onboarding/forms";
+} from "../../../lib/onboarding/forms";
 import {
   useOnboardingStore,
   createFinalizePayload,
-} from "../../lib/onboarding/store";
-import { getCurrentSession, getSupabaseClient } from "../../lib/supabase";
+} from "../../../lib/onboarding/store";
+import { getCurrentSession, getSupabaseClient } from "../../../lib/supabase";
 
 export default function FinalAuthScreen() {
   const router = useRouter();
-  const queryClient = useQueryClient();
+  const { setAuthenticatedSession } = useAuth();
   const profiles = useOnboardingStore((state) => state.profiles);
   const clearDraft = useOnboardingStore((state) => state.clearDraft);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
@@ -55,7 +56,7 @@ export default function FinalAuthScreen() {
   const onSubmit = handleSubmit(async (formValues) => {
     setSubmissionError(null);
     const parsed = authFormSchema.safeParse(formValues);
-    console.log(clearDraft);
+
     if (!parsed.success) {
       setSubmissionError(parsed.error.issues[0]?.message ?? "Check the form.");
       return;
@@ -107,10 +108,22 @@ export default function FinalAuthScreen() {
       return;
     }
 
+    let me;
+
+    try {
+      me = await getMe(activeSession.access_token);
+    } catch (error) {
+      setSubmissionError(
+        error instanceof Error
+          ? error.message
+          : "Could not load your account after finalization.",
+      );
+      return;
+    }
+
     clearDraft();
-    await queryClient.invalidateQueries({ queryKey: sessionQueryKey });
-    await queryClient.invalidateQueries({ queryKey: meQueryKey });
-    router.replace("/home");
+    setAuthenticatedSession(activeSession, me);
+    router.replace("/");
   });
 
   const isBusy = isSubmitting || finalizeMutation.isPending;
