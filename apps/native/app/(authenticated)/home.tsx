@@ -1,9 +1,9 @@
 import { AppButton, Card, StepScreen } from "../../components/onboarding-ui";
 import { Text, View } from "../../components/ui";
-import { useAuth } from "../../lib/auth";
+import { useAuthProvider } from "../../lib/auth-provider";
 
 export default function HomeScreen() {
-  const { logout } = useAuth();
+  const { logout } = useAuthProvider();
 
   return (
     <StepScreen

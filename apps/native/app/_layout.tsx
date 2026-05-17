@@ -4,7 +4,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { DeveloperErrorScreen } from "../components/app-state";
-import { AuthProvider } from "../lib/auth";
+import { AuthProvider } from "../lib/auth-provider";
 import { getNativeEnvResult } from "../lib/env";
 
 const queryClient = new QueryClient({

@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { Link, useRouter } from "expo-router";
 
 import { getMe } from "../../lib/api";
-import { useAuth } from "../../lib/auth";
+import { useAuthProvider } from "../../lib/auth-provider";
 import {
   authFormSchema,
   type AuthFormValues,
@@ -20,7 +20,7 @@ import { Text, View } from "../../components/ui";
 
 export default function LoginScreen() {
   const router = useRouter();
-  const { notice, setAuthenticatedSession } = useAuth();
+  const { notice, setAuthenticatedSession } = useAuthProvider();
   const [submissionError, setSubmissionError] = useState<string | null>(null);
   const {
     formState: { errors, isSubmitting },

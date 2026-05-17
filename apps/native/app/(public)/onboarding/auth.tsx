@@ -12,7 +12,7 @@ import {
   StepScreen,
 } from "../../../components/onboarding-ui";
 import { Text, View } from "../../../components/ui";
-import { useAuth } from "../../../lib/auth";
+import { useAuthProvider } from "../../../lib/auth-provider";
 import { finalizeOnboarding } from "../../../lib/api";
 import {
   authFormSchema,
@@ -26,7 +26,7 @@ import { getCurrentSession, getSupabaseClient } from "../../../lib/supabase";
 
 export default function FinalAuthScreen() {
   const router = useRouter();
-  const { setAuthenticatedSession } = useAuth();
+  const { setAuthenticatedSession } = useAuthProvider();
   const profiles = useOnboardingStore((state) => state.profiles);
   const clearDraft = useOnboardingStore((state) => state.clearDraft);
   const [submissionError, setSubmissionError] = useState<string | null>(null);

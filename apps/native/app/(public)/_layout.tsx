@@ -6,7 +6,7 @@ import {
   ErrorText,
   StepScreen,
 } from "../../components/onboarding-ui";
-import { useAuth } from "../../lib/auth";
+import { useAuthProvider } from "../../lib/auth-provider";
 import { getResumeOnboardingRoute } from "../../lib/onboarding/routes";
 import { useOnboardingStore } from "../../lib/onboarding/store";
 
@@ -15,7 +15,7 @@ export default function PublicLayout() {
   const router = useRouter();
   const isOnboardingPath = pathname.startsWith("/onboarding");
   const profiles = useOnboardingStore((state) => state.profiles);
-  const { error, logout, me, status } = useAuth();
+  const { error, logout, me, status } = useAuthProvider();
 
   if (status === "loading" && !isOnboardingPath) {
     return <LoadingState label="Checking your session" />;
