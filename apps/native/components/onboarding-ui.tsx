@@ -12,13 +12,13 @@ type ButtonProps = {
 
 const buttonClasses = {
   ghost: "border-transparent bg-transparent",
-  primary: "border-[#0F766E] bg-[#0F766E]",
+  primary: "border-white bg-primary",
   secondary: "border-[#D8D2C4] bg-[#FFFDF7]",
 };
 
 const buttonTextClasses = {
-  ghost: "text-[#0F766E]",
-  primary: "text-white",
+  ghost: "text-primary",
+  primary: "text-[#F6F1E2]",
   secondary: "text-[#173331]",
 };
 
@@ -31,14 +31,15 @@ export function AppButton({
   return (
     <Pressable
       accessibilityRole="button"
-      className={`rounded-[22px] border px-5 py-4 ${buttonClasses[tone]} ${
-        disabled ? "opacity-50" : ""
-      }`}
+      className={`h-14 items-center justify-center rounded-[14px] border px-5 ${
+        buttonClasses[tone]
+      } ${disabled ? "opacity-50" : ""}`}
       disabled={disabled}
       onPress={onPress}
     >
       <Text
-        className={`text-center text-base font-semibold ${buttonTextClasses[tone]}`}
+        className={`text-center text-[16.5px] ${buttonTextClasses[tone]}`}
+        style={{ fontFamily: "Geist-Medium", letterSpacing: -0.08 }}
       >
         {label}
       </Text>
@@ -164,6 +165,35 @@ export function FormField({
         </Text>
       ) : null}
     </View>
+  );
+}
+
+export function TextLink({
+  label,
+  onPress,
+}: {
+  label: string;
+  onPress?: () => void;
+}) {
+  return (
+    <Pressable
+      accessibilityRole="link"
+      className="items-center justify-center self-center px-4 py-2 pt-1"
+      hitSlop={12}
+      onPress={onPress}
+    >
+      <View
+        className="border-b pb-1"
+        style={{ borderBottomColor: "rgba(15, 31, 27, 0.35)" }}
+      >
+        <Text
+          className="text-[15px] text-text-primary"
+          style={{ fontFamily: "Geist-Medium", letterSpacing: -0.075 }}
+        >
+          {label}
+        </Text>
+      </View>
+    </Pressable>
   );
 }
 

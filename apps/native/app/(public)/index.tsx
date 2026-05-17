@@ -1,50 +1,59 @@
 import { useRouter } from "expo-router";
 
-import {
-  AppButton,
-  Card,
-  ErrorText,
-  StepScreen,
-} from "../../components/onboarding-ui";
+import { AppButton, TextLink } from "../../components/onboarding-ui";
 import { Text, View } from "../../components/ui";
 
 export default function WelcomeScreen() {
   const router = useRouter();
 
   return (
-    <StepScreen
-      subtitle="Build a simple check-in rhythm for yourself and the family members you care for."
-      title="Health tracking that starts with your real household."
-    >
-      <View className="gap-5 pt-4">
-        <Card>
-          <View className="gap-4">
-            <Text className="text-xs font-semibold uppercase tracking-[2px] text-[#6F7F78]">
-              Health Guard
-            </Text>
-            <Text className="font-serif text-[44px] font-bold leading-[46px] tracking-[-2px] text-[#172421]">
-              A calmer way to remember care.
-            </Text>
-            <Text className="text-base leading-7 text-[#66736D]">
-              Start with a short onboarding flow. We will recommend practical
-              checkups, let you adjust them, then create your account at the
-              end.
-            </Text>
-          </View>
-        </Card>
+    <View className="flex-1 bg-background px-7 pb-11 pt-[74px]">
+      <Text
+        className="text-[11px] uppercase text-text-secondary"
+        style={{
+          fontFamily: "Geist-Medium",
+          letterSpacing: 11 * 0.22,
+        }}
+      >
+        HEALTHGUARD
+      </Text>
 
-        <View className="gap-3">
-          <AppButton
-            label="Start onboarding"
-            onPress={() => router.push("/onboarding/tracking")}
-          />
-          <AppButton
-            label="Login"
-            onPress={() => router.push("/login")}
-            tone="secondary"
-          />
-        </View>
+      <View className="flex-1 justify-end pb-8">
+        <Text
+          className="font-serif text-[60px] text-text-primary"
+          style={{
+            lineHeight: 60 * 0.96,
+            letterSpacing: -1.5,
+          }}
+        >
+          {"Never miss\na "}
+          <Text
+            className="text-[#0A5249]"
+            style={{ fontFamily: "InstrumentSerif-Italic", fontStyle: "italic" }}
+          >
+            checkup
+          </Text>
+          {"\nagain."}
+        </Text>
+
+        <Text
+          className="mt-[22px] max-w-[280px] text-[15.5px] text-text-secondary"
+          style={{ lineHeight: 24, fontFamily: "Geist" }}
+        >
+          For you, your kids, and your parents — all in one place.
+        </Text>
       </View>
-    </StepScreen>
+
+      <View className="gap-2.5">
+        <AppButton
+          label="Begin"
+          onPress={() => router.push("/onboarding/tracking")}
+        />
+        <TextLink
+          label="I already have an account"
+          onPress={() => router.push("/login")}
+        />
+      </View>
+    </View>
   );
 }
