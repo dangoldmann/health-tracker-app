@@ -11,8 +11,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { Session } from "@supabase/supabase-js";
 import type { GetMeResponse } from "@repo/validation";
 
-import { getMe } from "./api";
-import { ApiError } from "./api/client";
+import { ApiError, getMe } from "./api";
 import { getCurrentSession, getSupabaseClient } from "./supabase";
 
 export type AuthStatus =
