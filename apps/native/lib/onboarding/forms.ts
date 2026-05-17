@@ -1,22 +1,13 @@
 import {
-  biologicalSexValues,
-  checkupTypeCatalog,
+  biologicalSexSchema,
   checkupTypeSlugSchema,
   type BiologicalSex,
   type CheckupTypeSlug,
 } from "@repo/validation";
 import { z } from "zod";
 
-const localBiologicalSexSchema = z.enum(biologicalSexValues);
-const localCheckupTypeSlugSchema = z.enum(
-  checkupTypeCatalog.map((checkupType) => checkupType.slug) as [
-    CheckupTypeSlug,
-    ...CheckupTypeSlug[],
-  ],
-);
-
 export const identityStepSchema = z.object({
-  biologicalSex: localBiologicalSexSchema,
+  biologicalSex: biologicalSexSchema,
   birthDate: z.iso.date(),
   name: z.string().trim().min(1, "Name is required.").max(120),
 });
@@ -27,7 +18,7 @@ export const authFormSchema = z.object({
 });
 
 export const profileCheckupDraftSchema = z.object({
-  checkupTypeSlug: localCheckupTypeSlugSchema,
+  checkupTypeSlug: checkupTypeSlugSchema,
   enabled: z.boolean(),
   frequencyDays: z.coerce
     .number()
