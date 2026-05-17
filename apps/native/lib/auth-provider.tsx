@@ -59,30 +59,17 @@ export function AuthProvider({ children }: PropsWithChildren) {
   }, [queryClient]);
 
   useEffect(() => {
-    let isMounted = true;
-
     async function bootstrapSession() {
       setError(null);
 
       try {
         const restoredSession = await getCurrentSession();
-
-        if (!isMounted) {
-          return;
-        }
-
         setSession(restoredSession);
       } catch (caughtError) {
-        if (!isMounted) {
-          return;
-        }
-
         setSession(null);
         setError(toError(caughtError, "Unable to restore your session."));
       } finally {
-        if (isMounted) {
-          setIsBootstrapped(true);
-        }
+        setIsBootstrapped(true);
       }
     }
 
@@ -91,10 +78,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
     const {
       data: { subscription },
     } = getSupabaseClient().auth.onAuthStateChange((_event, nextSession) => {
-      if (!isMounted) {
-        return;
-      }
-
       setError(null);
 
       if (!nextSession) {
@@ -107,7 +90,6 @@ export function AuthProvider({ children }: PropsWithChildren) {
     });
 
     return () => {
-      isMounted = false;
       subscription.unsubscribe();
     };
   }, [clearProfileCache]);
