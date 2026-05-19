@@ -2,7 +2,7 @@ import { ActivityIndicator, Text, View } from "./ui";
 
 export function LoadingState({ label = "Loading" }: { label?: string }) {
   return (
-    <View className="flex-1 items-center justify-center gap-3 bg-[#F5F0E6] px-6">
+    <View className="flex-1 items-center justify-center gap-3 bg-background px-6">
       <ActivityIndicator />
       <Text className="text-base text-[#66736D]">{label}</Text>
     </View>
@@ -11,7 +11,7 @@ export function LoadingState({ label = "Loading" }: { label?: string }) {
 
 export function DeveloperErrorScreen({ message }: { message: string }) {
   return (
-    <View className="flex-1 justify-center gap-4 bg-[#F5F0E6] px-6">
+    <View className="flex-1 justify-center gap-4 bg-background px-6">
       <Text className="font-serif text-4xl font-bold text-[#172421]">
         Configuration needed
       </Text>

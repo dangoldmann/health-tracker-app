@@ -5,10 +5,10 @@ export const baseStackScreenOptions: NativeStackNavigationOptions = {
   headerShadowVisible: false,
   headerTitle: "",
   headerStyle: {
-    backgroundColor: "#F5F0E6",
+    backgroundColor: "#F1ECE0",
   },
   headerTintColor: "#173331",
   contentStyle: {
-    backgroundColor: "#F5F0E6",
+    backgroundColor: "#F1ECE0",
   },
 };
