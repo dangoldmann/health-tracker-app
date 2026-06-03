@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { useForm } from "react-hook-form";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
 import { AppButton } from "../../../../../components/app-button";
@@ -9,10 +8,7 @@ import {
   SexPicker,
 } from "../../../../../components/onboarding";
 import { View } from "../../../../../components/ui";
-import {
-  parseIdentityStep,
-  type IdentityStepValues,
-} from "../../../../../lib/onboarding/forms";
+import { identityStepSchema } from "../../../../../lib/onboarding/forms";
 import { getOnboardingProgress } from "../../../../../lib/onboarding/progress";
 import { useOnboardingStore } from "../../../../../lib/onboarding/store";
 import { ProfileRelationship } from "@repo/validation";
@@ -33,19 +29,10 @@ export default function IdentityStepScreen() {
   const completeProfileStep = useOnboardingStore(
     (state) => state.completeProfileStep,
   );
-  const profile = profiles.find((item) => item.draftId === draftId);
+  const activeProfile = profiles.find((item) => item.draftId === draftId);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
-  const { handleSubmit, setValue, watch } = useForm<IdentityStepValues>({
-    defaultValues: {
-      biologicalSex: profile?.biologicalSex ?? "FEMALE",
-      birthDate: profile?.birthDate ?? "",
-      name: profile?.name ?? "",
-    },
-  });
 
-  const values = watch();
-
-  if (!profile) {
+  if (!activeProfile) {
     return (
       <OnboardingStepScreen title="Profile not found">
         <AppButton
@@ -56,30 +43,31 @@ export default function IdentityStepScreen() {
     );
   }
 
-  const activeProfile = profile;
-
-  const onSubmit = handleSubmit((formValues) => {
+  function continueFlow() {
     setSubmissionError(null);
-    const parsed = parseIdentityStep(formValues);
-
+    const parsed = identityStepSchema.safeParse({
+      biologicalSex: activeProfile!.biologicalSex,
+      birthDate: activeProfile!.birthDate,
+      name: activeProfile!.name
+    })
+ 
     if (!parsed.success) {
       setSubmissionError(parsed.error.issues[0]?.message ?? "Check the form.");
       return;
     }
-
-    setProfileIdentity(activeProfile.draftId, parsed.data);
-    completeProfileStep(activeProfile.draftId, "identity");
-    router.push(`/onboarding/profile/${activeProfile.draftId}/health`);
-  });
+    
+    completeProfileStep(activeProfile!.draftId, "identity");
+    router.push(`/onboarding/profile/${activeProfile!.draftId}/health`);
+  }
 
   const indicatorBase = `Profile ${
     profiles.findIndex((p) => p.draftId === activeProfile.draftId) + 1
   } of ${profiles.length}`;
-  const indicatorName = values.name?.trim() || activeProfile.label;
+  const indicatorName = activeProfile.name?.trim() || activeProfile.label;
 
   return (
     <OnboardingStepScreen
-      footer={<AppButton label="Continue" onPress={onSubmit} />}
+      footer={<AppButton label="Continue" onPress={continueFlow} />}
       kicker={`${indicatorBase} · ${indicatorName}`}
       progress={getOnboardingProgress(profiles)}
       subtitle="Just the basics."
@@ -91,19 +79,25 @@ export default function IdentityStepScreen() {
           autoCapitalize="words"
           autoComplete="name"
           label="Full name"
-          onChangeText={(value) => setValue("name", value)}
+          onChangeText={(value) =>
+            setProfileIdentity(activeProfile.draftId, { name: value })
+          }
           placeholder="John Doe"
-          value={values.name}
+          value={activeProfile.name ?? ""}
         />
         <FormField
           label="Birth date"
-          onChangeText={(value) => setValue("birthDate", value)}
+          onChangeText={(value) =>
+            setProfileIdentity(activeProfile.draftId, { birthDate: value })
+          }
           placeholder="YYYY-MM-DD"
-          value={values.birthDate}
+          value={activeProfile.birthDate ?? ""}
         />
         <SexPicker
-          onSelect={(value) => setValue("biologicalSex", value)}
-          value={values.biologicalSex}
+          onSelect={(value) =>
+            setProfileIdentity(activeProfile.draftId, { biologicalSex: value })
+          }
+          value={activeProfile.biologicalSex}
         />
         <ErrorText>{submissionError}</ErrorText>
       </View>

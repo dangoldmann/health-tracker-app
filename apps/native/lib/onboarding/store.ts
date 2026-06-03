@@ -84,11 +84,11 @@ type OnboardingState = {
   ) => void;
   setProfileIdentity: (
     draftId: string,
-    identity: {
+    identity: Partial<{
       biologicalSex: BiologicalSex;
       birthDate: string;
       name: string;
-    },
+    }>,
   ) => void;
   setProfileRecord: (
     draftId: string,

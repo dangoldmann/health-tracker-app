@@ -1,7 +1,6 @@
 import {
   biologicalSexSchema,
   checkupTypeSlugSchema,
-  type BiologicalSex,
   type CheckupTypeSlug,
 } from "@repo/validation";
 import { z } from "zod";
@@ -30,14 +29,6 @@ export const profileCheckupDraftSchema = z.object({
 
 export type IdentityStepValues = z.infer<typeof identityStepSchema>;
 export type AuthFormValues = z.infer<typeof authFormSchema>;
-
-export function parseIdentityStep(values: {
-  biologicalSex: BiologicalSex;
-  birthDate?: string;
-  name?: string;
-}) {
-  return identityStepSchema.safeParse(values);
-}
 
 export function isCheckupSlug(value: string): value is CheckupTypeSlug {
   return checkupTypeSlugSchema.safeParse(value).success;
