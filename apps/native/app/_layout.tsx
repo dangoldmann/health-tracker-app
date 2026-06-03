@@ -1,9 +1,6 @@
 import "../global.css";
 
-import {
-  Geist_400Regular,
-  Geist_500Medium,
-} from "@expo-google-fonts/geist";
+import { Geist_400Regular, Geist_500Medium } from "@expo-google-fonts/geist";
 import {
   InstrumentSerif_400Regular,
   InstrumentSerif_400Regular_Italic,

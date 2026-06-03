@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
 
-import { AppButton, TextLink } from "../../components/onboarding-ui";
+import { AppButton } from "../../components/app-button";
+import { TextLink } from "../../components/form-field";
 import { Text, View } from "../../components/ui";
 
 export default function WelcomeScreen() {
@@ -29,7 +30,10 @@ export default function WelcomeScreen() {
           {"Never miss\na "}
           <Text
             className="text-[#0A5249]"
-            style={{ fontFamily: "InstrumentSerif-Italic", fontStyle: "italic" }}
+            style={{
+              fontFamily: "InstrumentSerif-Italic",
+              fontStyle: "italic",
+            }}
           >
             checkup
           </Text>

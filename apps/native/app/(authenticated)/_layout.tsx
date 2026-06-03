@@ -1,11 +1,9 @@
 import { Redirect, Stack } from "expo-router";
 
 import { LoadingState } from "../../components/app-state";
-import {
-  AppButton,
-  ErrorText,
-  StepScreen,
-} from "../../components/onboarding-ui";
+import { AppButton } from "../../components/app-button";
+import { ErrorText } from "../../components/form-field";
+import { Screen } from "../../components/screen";
 import { useAuthProvider } from "../../lib/auth-provider";
 import { getResumeOnboardingRoute } from "../../lib/onboarding/routes";
 import { useOnboardingStore } from "../../lib/onboarding/store";
@@ -20,7 +18,7 @@ export default function AuthenticatedLayout() {
 
   if (status === "error") {
     return (
-      <StepScreen title="Session check failed">
+      <Screen title="Session check failed">
         <ErrorText>
           {error?.message ?? "Unable to verify your session."}
         </ErrorText>
@@ -30,7 +28,7 @@ export default function AuthenticatedLayout() {
             void logout();
           }}
         />
-      </StepScreen>
+      </Screen>
     );
   }
 

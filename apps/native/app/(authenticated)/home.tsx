@@ -1,4 +1,6 @@
-import { AppButton, Card, StepScreen } from "../../components/onboarding-ui";
+import { AppButton } from "../../components/app-button";
+import { Card } from "../../components/card";
+import { Screen } from "../../components/screen";
 import { Text, View } from "../../components/ui";
 import { useAuthProvider } from "../../lib/auth-provider";
 
@@ -6,7 +8,7 @@ export default function HomeScreen() {
   const { logout } = useAuthProvider();
 
   return (
-    <StepScreen
+    <Screen
       subtitle="The onboarding gate is complete. Dashboard features stay out of scope for this iteration."
       title="Home"
     >
@@ -28,6 +30,6 @@ export default function HomeScreen() {
           />
         </View>
       </Card>
-    </StepScreen>
+    </Screen>
   );
 }
