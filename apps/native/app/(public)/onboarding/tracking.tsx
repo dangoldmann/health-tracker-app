@@ -1,11 +1,12 @@
-import { useState } from "react";
 import { useRouter } from "expo-router";
 
+import { AppButton } from "../../../components/app-button";
 import {
-  AppButton,
-  ChoiceCard,
-  StepScreen,
-} from "../../../components/onboarding-ui";
+  OnboardingStepScreen,
+  TrackingOption,
+} from "../../../components/onboarding";
+import { View } from "../../../components/ui";
+import { getOnboardingProgress } from "../../../lib/onboarding/progress";
 import {
   useOnboardingStore,
   type TrackingSelection,
@@ -13,68 +14,63 @@ import {
 
 export default function TrackingScreen() {
   const router = useRouter();
-  const savedSelection = useOnboardingStore((state) => state.trackingSelection);
+  const profiles = useOnboardingStore((state) => state.profiles);
+  const selection = useOnboardingStore((state) => state.trackingSelection);
   const setTrackingSelection = useOnboardingStore(
     (state) => state.setTrackingSelection,
   );
   const buildQueue = useOnboardingStore((state) => state.buildQueue);
-  const [selection, setSelection] = useState<TrackingSelection>(savedSelection);
 
   const hasSelection = selection.self || selection.child || selection.parent;
 
   function toggle(key: keyof TrackingSelection) {
-    setSelection((current) => ({
-      ...current,
-      [key]: !current[key],
-    }));
+    setTrackingSelection({ ...selection, [key]: !selection[key] });
   }
 
   function continueFlow() {
-    setTrackingSelection(selection);
+    const firstDraftId = buildQueue();
+    if (!firstDraftId) return;
 
-    if (selection.child) {
-      router.push("/onboarding/children");
-      return;
-    }
-
-    if (selection.parent) {
-      router.push("/onboarding/parents");
-      return;
-    }
-
-    buildQueue();
-    router.push("/onboarding/profile/self-1/identity");
+    router.push(`/onboarding/profile/${firstDraftId}/identity`);
   }
 
   return (
-    <StepScreen
-      progress={0.08}
-      subtitle="Choose the household members you want to configure in this onboarding run."
-      title="Who are you tracking?"
+    <OnboardingStepScreen
+      footer={
+        <AppButton
+          disabled={!hasSelection}
+          label="Continue"
+          onPress={continueFlow}
+        />
+      }
+      progress={getOnboardingProgress(profiles)}
+      subtitle="Pick anyone you'd like to set up now. You can add more later."
+      title={"Who are we\ntracking?"}
+      titleSize={42}
     >
-      <ChoiceCard
-        description="Optional. Set up your own recurring checkups."
-        label="Myself"
-        onPress={() => toggle("self")}
-        selected={selection.self}
-      />
-      <ChoiceCard
-        description="Add one or two child profiles next."
-        label="My children"
-        onPress={() => toggle("child")}
-        selected={selection.child}
-      />
-      <ChoiceCard
-        description="Add one or two parent profiles next."
-        label="My parents"
-        onPress={() => toggle("parent")}
-        selected={selection.parent}
-      />
-      <AppButton
-        disabled={!hasSelection}
-        label="Continue"
-        onPress={continueFlow}
-      />
-    </StepScreen>
+      <View className="mt-2 gap-3">
+        <TrackingOption
+          iconLabel="M"
+          label="Myself"
+          onPress={() => toggle("self")}
+          selected={selection.self}
+          sub="Your own checkups and records."
+        />
+        <TrackingOption
+          iconLabel="C"
+          label="My children"
+          onPress={() => toggle("child")}
+          selected={selection.child}
+          sub="Pediatric visits, vaccinations, growth."
+        />
+        <TrackingOption
+          iconLabel="P"
+          label="My parents"
+          onPress={() => toggle("parent")}
+          selected={selection.parent}
+          sub="Annual screenings and follow-ups."
+        />
+      </View>
+    </OnboardingStepScreen>
   );
 }

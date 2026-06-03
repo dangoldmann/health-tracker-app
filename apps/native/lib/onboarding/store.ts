@@ -1,7 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
-  buildOnboardingQueue,
   finalizeOnboardingRequestSchema,
+  MAX_CHILD_PROFILES,
+  MAX_PARENT_PROFILES,
+  MAX_SELF_PROFILES,
   type BiologicalSex,
   type CheckupTypeSlug,
   type FinalizeOnboardingRequest,
@@ -60,19 +62,15 @@ export type ProfileDraft = {
   selectedCheckups: ProfileCheckupDraft[];
 };
 
-type ProfileCounts = {
-  childCount: number;
-  parentCount: number;
-};
-
 type ProfileStep = keyof ProfileDraft["completedSteps"];
 
 type OnboardingState = {
   currentDraftId: string | null;
-  profileCounts: ProfileCounts;
   profiles: ProfileDraft[];
   trackingSelection: TrackingSelection;
-  buildQueue: () => void;
+  addProfile: (relationship: ProfileRelationship) => string | null;
+  buildQueue: () => string | null;
+  canAddProfile: (relationship: ProfileRelationship) => boolean;
   clearDraft: () => void;
   completeProfileStep: (draftId: string, step: ProfileStep) => void;
   replaceProfileCheckups: (
@@ -80,7 +78,6 @@ type OnboardingState = {
     checkups: ProfileCheckupDraft[],
   ) => void;
   setCurrentDraftId: (draftId: string | null) => void;
-  setProfileCounts: (counts: Partial<ProfileCounts>) => void;
   setProfileHealth: (
     draftId: string,
     health: Partial<ProfileHealthDraft>,
@@ -120,15 +117,11 @@ const defaultHealth: ProfileHealthDraft = {
 
 const initialState = {
   currentDraftId: null,
-  profileCounts: {
-    childCount: 1,
-    parentCount: 1,
-  },
   profiles: [],
   trackingSelection: {
     child: false,
     parent: false,
-    self: false,
+    self: true,
   },
 };
 
@@ -167,21 +160,97 @@ export const useOnboardingStore = create<OnboardingState>()(
   persist(
     (set, get) => ({
       ...initialState,
+      addProfile: (relationship) => {
+        const { profiles } = get();
+        const sameRelationship = profiles.filter(
+          (profile) => profile.relationship === relationship,
+        );
+        const max =
+          relationship === "SELF"
+            ? MAX_SELF_PROFILES
+            : relationship === "CHILD"
+              ? MAX_CHILD_PROFILES
+              : MAX_PARENT_PROFILES;
+
+        if (sameRelationship.length >= max) {
+          return null;
+        }
+
+        const nextIndex = sameRelationship.length + 1;
+        const prefix = relationship.toLocaleLowerCase();
+        const draftId = `${prefix}-${nextIndex}`;
+        const label =
+          relationship === "SELF"
+            ? "Myself"
+            : `${prefix === "child" ? "Child" : "Parent"} ${nextIndex}`;
+        const newProfile = createProfileDraft(draftId, relationship, label);
+
+        set({ profiles: [...profiles, newProfile] });
+        return draftId;
+      },
+      canAddProfile: (relationship) => {
+        const sameRelationship = get().profiles.filter(
+          (profile) => profile.relationship === relationship,
+        );
+        const max =
+          relationship === "SELF"
+            ? MAX_SELF_PROFILES
+            : relationship === "CHILD"
+              ? MAX_CHILD_PROFILES
+              : MAX_PARENT_PROFILES;
+        return sameRelationship.length < max;
+      },
       buildQueue: () => {
-        const { profileCounts, trackingSelection } = get();
-        const queue = buildOnboardingQueue({
-          includeSelf: trackingSelection.self,
-          childCount: trackingSelection.child ? profileCounts.childCount : 0,
-          parentCount: trackingSelection.parent ? profileCounts.parentCount : 0,
-        });
-        const profiles = queue.map((entry) =>
-          createProfileDraft(entry.draftId, entry.relationship, entry.label),
+        const { profiles: existing, trackingSelection } = get();
+
+        const keepRelationship = (relationship: ProfileRelationship) =>
+          relationship === "SELF"
+            ? trackingSelection.self
+            : relationship === "CHILD"
+              ? trackingSelection.child
+              : trackingSelection.parent;
+
+        const kept = existing.filter((profile) =>
+          keepRelationship(profile.relationship),
         );
 
-        set({
-          currentDraftId: profiles[0]?.draftId ?? null,
-          profiles,
+        const seed = (
+          relationship: ProfileRelationship,
+          draftId: string,
+          label: string,
+        ) => {
+          if (!keepRelationship(relationship)) return null;
+          if (kept.some((profile) => profile.relationship === relationship)) {
+            return null;
+          }
+          return createProfileDraft(draftId, relationship, label);
+        };
+
+        const seeded = [
+          seed("SELF", "self-1", "Myself"),
+          seed("CHILD", "child-1", "Child 1"),
+          seed("PARENT", "parent-1", "Parent 1"),
+        ].filter((profile): profile is ProfileDraft => profile !== null);
+
+        const merged = [...kept, ...seeded];
+        const order: Record<ProfileRelationship, number> = {
+          SELF: 0,
+          CHILD: 1,
+          PARENT: 2,
+        };
+        merged.sort((a, b) => {
+          const byRelationship =
+            order[a.relationship] - order[b.relationship];
+          if (byRelationship !== 0) return byRelationship;
+          return a.draftId.localeCompare(b.draftId);
         });
+
+        const firstDraftId = merged[0]?.draftId ?? null;
+        set({
+          currentDraftId: firstDraftId,
+          profiles: merged,
+        });
+        return firstDraftId;
       },
       clearDraft: () => set(initialState),
       completeProfileStep: (draftId, step) =>
@@ -202,13 +271,6 @@ export const useOnboardingStore = create<OnboardingState>()(
           })),
         })),
       setCurrentDraftId: (draftId) => set({ currentDraftId: draftId }),
-      setProfileCounts: (counts) =>
-        set((state) => ({
-          profileCounts: {
-            ...state.profileCounts,
-            ...counts,
-          },
-        })),
       setProfileHealth: (draftId, health) =>
         set((state) => ({
           profiles: updateProfile(state.profiles, draftId, (profile) => ({

@@ -20,8 +20,6 @@ export default function OnboardingLayout() {
           ),
         }}
       />
-      <Stack.Screen name="children" options={{ title: "Children" }} />
-      <Stack.Screen name="parents" options={{ title: "Parents" }} />
       <Stack.Screen name="review" options={{ title: "Review" }} />
       <Stack.Screen name="auth" options={{ title: "Create account" }} />
       <Stack.Screen name="profile/[draftId]" options={{ headerShown: false }} />
