@@ -1,3 +1,20 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css";
+@import "nativewind/theme";
+
+@theme {
+  --color-alert: #F43F5E;
+  --color-background: #F1ECE0;
+  --color-primary: #0F6B61;
+  --color-secondary: #3B82F6;
+  --color-success: #10B981;
+  --color-surface: #FFFFFF;
+  --color-text-primary: #0F1F1B;
+  --color-text-secondary: #6B7771;
+
+  --font-sans: "Geist", system-ui, sans-serif;
+  --font-serif: "InstrumentSerif", serif;
+
+  --shadow-card: 0 6px 16px rgba(15, 23, 42, 0.06);
+}
