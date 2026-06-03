@@ -9,7 +9,10 @@ import {
 } from "../../../../../components/onboarding";
 import { View } from "../../../../../components/ui";
 import { identityStepSchema } from "../../../../../lib/onboarding/forms";
-import { getOnboardingProgress } from "../../../../../lib/onboarding/progress";
+import {
+  getOnboardingProgress,
+  getProfileIndicator,
+} from "../../../../../lib/onboarding/progress";
 import { useOnboardingStore } from "../../../../../lib/onboarding/store";
 import { ProfileRelationship } from "@repo/validation";
 
@@ -48,27 +51,22 @@ export default function IdentityStepScreen() {
     const parsed = identityStepSchema.safeParse({
       biologicalSex: activeProfile!.biologicalSex,
       birthDate: activeProfile!.birthDate,
-      name: activeProfile!.name
-    })
- 
+      name: activeProfile!.name,
+    });
+
     if (!parsed.success) {
       setSubmissionError(parsed.error.issues[0]?.message ?? "Check the form.");
       return;
     }
-    
+
     completeProfileStep(activeProfile!.draftId, "identity");
     router.push(`/onboarding/profile/${activeProfile!.draftId}/health`);
   }
 
-  const indicatorBase = `Profile ${
-    profiles.findIndex((p) => p.draftId === activeProfile.draftId) + 1
-  } of ${profiles.length}`;
-  const indicatorName = activeProfile.name?.trim() || activeProfile.label;
-
   return (
     <OnboardingStepScreen
       footer={<AppButton label="Continue" onPress={continueFlow} />}
-      kicker={`${indicatorBase} · ${indicatorName}`}
+      kicker={getProfileIndicator(profiles, activeProfile.draftId)}
       progress={getOnboardingProgress(profiles)}
       subtitle="Just the basics."
       title={title[activeProfile.relationship]}

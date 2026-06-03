@@ -33,3 +33,15 @@ export function getProfileContextLabel(
 
   return `Profile ${index + 1} of ${profiles.length}`;
 }
+
+export function getProfileIndicator(profiles: ProfileDraft[], draftId: string) {
+  const index = profiles.findIndex((profile) => profile.draftId === draftId);
+  const profile = profiles[index];
+
+  if (!profile) {
+    return undefined;
+  }
+
+  const display = profile.name?.trim() || profile.label;
+  return `Profile ${index + 1} of ${profiles.length} · ${display}`;
+}
