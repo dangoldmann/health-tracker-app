@@ -59,7 +59,7 @@ const childHealthInfoSchema = z.object({
 const baseProfileInputSchema = z.object({
   name: z.string().trim().min(1).max(120),
   birthDate: isoDateSchema,
-  biologicalSex: biologicalSexSchema.optional(),
+  biologicalSex: biologicalSexSchema,
   checkups: z
     .array(profileCheckupInputSchema)
     .min(1)

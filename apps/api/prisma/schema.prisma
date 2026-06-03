@@ -21,6 +21,7 @@ enum BiologicalSex {
   MALE
   FEMALE
   OTHER
+  PREFER_NOT_TO_SAY
 }
 
 model User {
@@ -40,7 +41,7 @@ model Profile {
   name          String
   relationship  ProfileRelationship
   birthDate     DateTime            @map("birth_date") @db.Date
-  biologicalSex BiologicalSex?      @map("biological_sex")
+  biologicalSex BiologicalSex       @map("biological_sex")
   healthInfo    Json                @map("health_info") @db.JsonB
   createdAt     DateTime            @default(now()) @map("created_at")
   updatedAt     DateTime            @updatedAt @map("updated_at")

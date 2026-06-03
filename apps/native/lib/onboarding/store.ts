@@ -45,7 +45,7 @@ export type ProfileCheckupDraft = {
 };
 
 export type ProfileDraft = {
-  biologicalSex?: BiologicalSex;
+  biologicalSex: BiologicalSex;
   birthDate?: string;
   completedSteps: {
     checkups: boolean;
@@ -131,6 +131,7 @@ function createProfileDraft(
   label: string,
 ): ProfileDraft {
   return {
+    biologicalSex: "FEMALE",
     completedSteps: {
       checkups: false,
       health: false,

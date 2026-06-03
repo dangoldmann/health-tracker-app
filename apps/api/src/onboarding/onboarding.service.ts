@@ -149,7 +149,7 @@ export class OnboardingService {
         name: profile.name,
         relationship: profile.relationship,
         birthDate: this.toDateOnly(profile.birthDate),
-        biologicalSex: profile.biologicalSex ?? null,
+        biologicalSex: profile.biologicalSex,
         healthInfo: profile.healthInfo,
       },
     });

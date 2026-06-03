@@ -26,7 +26,7 @@ export type BuildOnboardingQueueInput = {
 
 export type OnboardingRecommendationProfileDraft = {
   birthDate: string;
-  biologicalSex?: BiologicalSex;
+  biologicalSex: BiologicalSex;
   relationship: ProfileRelationship;
   healthInfo?: Partial<{
     riskFactors: Partial<{

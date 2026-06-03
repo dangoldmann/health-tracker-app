@@ -1,5 +1,10 @@
 export const profileRelationshipValues = ["SELF", "PARENT", "CHILD"] as const;
-export const biologicalSexValues = ["MALE", "FEMALE", "OTHER"] as const;
+export const biologicalSexValues = [
+  "MALE",
+  "FEMALE",
+  "OTHER",
+  "PREFER_NOT_TO_SAY",
+] as const;
 
 export const MAX_SELF_PROFILES = 1;
 export const MAX_CHILD_PROFILES = 2;

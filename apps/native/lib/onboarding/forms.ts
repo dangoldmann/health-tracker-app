@@ -32,7 +32,7 @@ export type IdentityStepValues = z.infer<typeof identityStepSchema>;
 export type AuthFormValues = z.infer<typeof authFormSchema>;
 
 export function parseIdentityStep(values: {
-  biologicalSex?: BiologicalSex;
+  biologicalSex: BiologicalSex;
   birthDate?: string;
   name?: string;
 }) {
