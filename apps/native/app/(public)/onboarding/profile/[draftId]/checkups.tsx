@@ -85,7 +85,6 @@ export default function CheckupsStepScreen() {
                     ...activeProfile.selectedCheckups,
                     {
                       checkupTypeSlug: checkupType.slug,
-                      enabled: true,
                       frequencyDays: 365,
                       source: "added",
                     },

@@ -42,7 +42,6 @@ export type ProfileHealthDraft = {
 
 export type ProfileCheckupDraft = {
   checkupTypeSlug: CheckupTypeSlug;
-  enabled: boolean;
   frequencyDays: number;
   initialRecord?:
     | {
@@ -367,13 +366,11 @@ function profileDraftToInput(profile: ProfileDraft): OnboardingProfileInput {
   const base = {
     biologicalSex: profile.biologicalSex,
     birthDate: profile.birthDate ?? "",
-    checkups: profile.selectedCheckups
-      .filter((checkup) => checkup.enabled)
-      .map((checkup) => ({
-        checkupTypeSlug: checkup.checkupTypeSlug,
-        frequencyDays: checkup.frequencyDays,
-        initialRecord: getInitialRecordInput(checkup),
-      })),
+    checkups: profile.selectedCheckups.map((checkup) => ({
+      checkupTypeSlug: checkup.checkupTypeSlug,
+      frequencyDays: checkup.frequencyDays,
+      initialRecord: getInitialRecordInput(checkup),
+    })),
     name: profile.name ?? "",
   };
 

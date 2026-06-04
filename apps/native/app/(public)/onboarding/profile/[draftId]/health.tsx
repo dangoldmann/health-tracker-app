@@ -53,7 +53,6 @@ export default function HealthStepScreen() {
         relationship: profile.relationship,
       }).map((checkup) => ({
         checkupTypeSlug: checkup.checkupTypeSlug,
-        enabled: true,
         frequencyDays: checkup.frequencyDays,
         source: "recommended" as const,
       }));
