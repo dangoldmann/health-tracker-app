@@ -1,8 +1,4 @@
-import {
-  biologicalSexSchema,
-  checkupTypeSlugSchema,
-  type CheckupTypeSlug,
-} from "@repo/validation";
+import { biologicalSexSchema } from "@repo/validation";
 import { z } from "zod";
 
 export const identityStepSchema = z.object({
@@ -16,20 +12,38 @@ export const authFormSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters."),
 });
 
-export const profileCheckupDraftSchema = z.object({
-  checkupTypeSlug: checkupTypeSlugSchema,
-  enabled: z.boolean(),
-  frequencyDays: z.coerce
-    .number()
-    .int("Use whole days.")
-    .positive("Frequency must be positive."),
-  initialPerformedAt: z.iso.date().optional(),
-  source: z.enum(["added", "recommended"]),
-});
-
 export type IdentityStepValues = z.infer<typeof identityStepSchema>;
 export type AuthFormValues = z.infer<typeof authFormSchema>;
 
-export function isCheckupSlug(value: string): value is CheckupTypeSlug {
-  return checkupTypeSlugSchema.safeParse(value).success;
+export function createExactRecordDateSchema({
+  birthDate,
+}: {
+  birthDate?: string;
+}) {
+  const todayIso = new Date().toISOString().slice(0, 10);
+
+  return z.string().superRefine((value, ctx) => {
+    if (!z.iso.date().safeParse(value).success) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Use YYYY-MM-DD for exact dates.",
+      });
+      return;
+    }
+
+    if (value > todayIso) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Date cannot be in the future.",
+      });
+      return;
+    }
+
+    if (birthDate && value < birthDate) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Date cannot be before the profile birth date.",
+      });
+    }
+  });
 }

@@ -1,21 +1,24 @@
 import { useState } from "react";
 import { checkupTypeCatalog } from "@repo/validation";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { z } from "zod";
 
+import { AppButton } from "../../../../../components/app-button";
+import { ErrorText } from "../../../../../components/form-field";
 import {
-  AppButton,
-  Card,
-  FormField,
-  StepScreen,
-  ErrorText,
-} from "../../../../../components/onboarding-ui";
-import { Pressable, Text, View } from "../../../../../components/ui";
+  AddExactDateLink,
+  ExactDateRow,
+  OnboardingStepScreen,
+  RecordSegmented,
+} from "../../../../../components/onboarding";
+import { Text, View } from "../../../../../components/ui";
 import {
+  createExactRecordDateSchema,
+  formatFrequencyLabel,
   getOnboardingProgress,
-  getProfileContextLabel,
-} from "../../../../../lib/onboarding/progress";
-import { useOnboardingStore } from "../../../../../lib/onboarding/store";
+  getProfileIndicator,
+  recordRecencyBucketOptions,
+  useOnboardingStore,
+} from "../../../../../lib/onboarding";
 
 export default function RecordsStepScreen() {
   const router = useRouter();
@@ -27,105 +30,152 @@ export default function RecordsStepScreen() {
   const completeProfileStep = useOnboardingStore(
     (state) => state.completeProfileStep,
   );
-  const profile = profiles.find((item) => item.draftId === draftId);
-  const [records, setRecords] = useState<Record<string, string | undefined>>(
-    () =>
-      Object.fromEntries(
-        (profile?.selectedCheckups ?? []).map((checkup) => [
-          checkup.checkupTypeSlug,
-          checkup.initialPerformedAt,
-        ]),
-      ),
-  );
+  const activeProfile = profiles.find((item) => item.draftId === draftId);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
 
-  if (!profile) {
+  if (!activeProfile) {
     return (
-      <StepScreen title="Profile not found">
+      <OnboardingStepScreen title="Profile not found">
         <AppButton
           label="Restart onboarding"
           onPress={() => router.replace("/onboarding/tracking")}
         />
-      </StepScreen>
+      </OnboardingStepScreen>
     );
   }
 
-  const activeProfile = profile;
-
   function continueFlow() {
     setSubmissionError(null);
+    const profile = activeProfile!;
+    const exactDateSchema = createExactRecordDateSchema({
+      birthDate: profile.birthDate,
+    });
 
-    for (const checkup of activeProfile.selectedCheckups) {
-      const performedAt = records[checkup.checkupTypeSlug]?.trim();
+    for (const checkup of profile.selectedCheckups) {
+      const slug = checkup.checkupTypeSlug;
+      const exactDate =
+        checkup.initialRecord?.source === "exact"
+          ? checkup.initialRecord.performedAt.trim()
+          : undefined;
 
-      if (performedAt && !z.iso.date().safeParse(performedAt).success) {
-        setSubmissionError("Use YYYY-MM-DD for last performed dates.");
-        return;
+      if (exactDate) {
+        const validation = exactDateSchema.safeParse(exactDate);
+        if (!validation.success) {
+          setSubmissionError(
+            validation.error.issues[0]?.message ??
+              "Use YYYY-MM-DD for exact dates.",
+          );
+          return;
+        }
+        setProfileRecord(profile.draftId, slug, {
+          performedAt: exactDate,
+          source: "exact",
+        });
+        continue;
       }
 
-      setProfileRecord(
-        activeProfile.draftId,
-        checkup.checkupTypeSlug,
-        performedAt || undefined,
-      );
+      if (exactDate !== undefined && exactDate === "") {
+        setProfileRecord(profile.draftId, slug, undefined);
+      }
     }
 
-    completeProfileStep(activeProfile.draftId, "records");
-    router.push(`/onboarding/profile/${activeProfile.draftId}/review`);
+    completeProfileStep(profile.draftId, "records");
+    router.push(`/onboarding/profile/${profile.draftId}/review`);
   }
 
   return (
-    <StepScreen
-      kicker={`${getProfileContextLabel(profiles, activeProfile.draftId)} · ${
-        activeProfile.name || activeProfile.label
-      }`}
-      progress={getOnboardingProgress(profiles)}
-      subtitle="If you remember the last visit date, add it. Otherwise skip the item."
-      title="Any last-known checkups?"
+    <OnboardingStepScreen
       footer={<AppButton label="Continue" onPress={continueFlow} />}
+      kicker={getProfileIndicator(profiles, activeProfile.draftId)}
+      progress={getOnboardingProgress(profiles)}
+      subtitle="Roughly when was each one done? Skip any you're unsure about."
+      title="Last visit?"
+      titleSize={36}
     >
-      <View className="gap-4">
+      <View className="mt-3 gap-[18px]">
         {activeProfile.selectedCheckups.map((checkup) => {
           const catalogItem = checkupTypeCatalog.find(
             (item) => item.slug === checkup.checkupTypeSlug,
           );
+          const source = checkup.initialRecord?.source;
+          const bucket =
+            source === "bucket" ? checkup.initialRecord!.bucket : undefined;
+          const exactDate =
+            source === "exact" ? checkup.initialRecord!.performedAt : undefined;
 
           return (
-            <Card key={checkup.checkupTypeSlug}>
-              <View className="gap-3">
-                <Text className="text-lg font-semibold text-[#172421]">
+            <View
+              className="gap-2.5 border-b border-text-primary/10 pb-[18px]"
+              key={checkup.checkupTypeSlug}
+            >
+              <View className="mb-1">
+                <Text
+                  className="text-[15.5px] text-text-primary"
+                  style={{ fontFamily: "Geist", letterSpacing: -0.08 }}
+                >
                   {catalogItem?.name ?? checkup.checkupTypeSlug}
                 </Text>
-                <FormField
-                  label="Last performed date"
-                  onChangeText={(value) =>
-                    setRecords((current) => ({
-                      ...current,
-                      [checkup.checkupTypeSlug]: value,
-                    }))
-                  }
-                  placeholder="YYYY-MM-DD"
-                  value={records[checkup.checkupTypeSlug] ?? ""}
-                />
-                <Pressable
-                  accessibilityRole="button"
-                  onPress={() =>
-                    setRecords((current) => ({
-                      ...current,
-                      [checkup.checkupTypeSlug]: undefined,
-                    }))
-                  }
+                <Text
+                  className="mt-0.5 text-[12.5px] text-[#6B7771]"
+                  style={{ fontFamily: "Geist" }}
                 >
-                  <Text className="font-semibold text-[#0F766E]">
-                    Skip for now
-                  </Text>
-                </Pressable>
+                  {formatFrequencyLabel(checkup.frequencyDays)}
+                </Text>
               </View>
-            </Card>
+              <RecordSegmented
+                onSelect={(next) =>
+                  setProfileRecord(
+                    activeProfile.draftId,
+                    checkup.checkupTypeSlug,
+                    {
+                      bucket: next,
+                      source: "bucket",
+                    },
+                  )
+                }
+                options={recordRecencyBucketOptions}
+                value={bucket}
+              />
+              {exactDate !== undefined ? (
+                <ExactDateRow
+                  exactDate={exactDate}
+                  onChangeText={(value) =>
+                    setProfileRecord(
+                      activeProfile.draftId,
+                      checkup.checkupTypeSlug,
+                      {
+                        performedAt: value,
+                        source: "exact",
+                      },
+                    )
+                  }
+                  onClear={() =>
+                    setProfileRecord(
+                      activeProfile.draftId,
+                      checkup.checkupTypeSlug,
+                      undefined,
+                    )
+                  }
+                />
+              ) : (
+                <AddExactDateLink
+                  onPress={() =>
+                    setProfileRecord(
+                      activeProfile.draftId,
+                      checkup.checkupTypeSlug,
+                      {
+                        performedAt: "",
+                        source: "exact",
+                      },
+                    )
+                  }
+                />
+              )}
+            </View>
           );
         })}
       </View>
       <ErrorText>{submissionError}</ErrorText>
-    </StepScreen>
+    </OnboardingStepScreen>
   );
 }

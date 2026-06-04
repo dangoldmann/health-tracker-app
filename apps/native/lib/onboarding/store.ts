@@ -12,6 +12,10 @@ import {
 } from "@repo/validation";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
+import {
+  RecordRecencyBucket,
+  type RecordRecencyBucket as RecordRecencyBucketValue,
+} from "./records";
 
 export type TrackingSelection = {
   child: boolean;
@@ -40,7 +44,15 @@ export type ProfileCheckupDraft = {
   checkupTypeSlug: CheckupTypeSlug;
   enabled: boolean;
   frequencyDays: number;
-  initialPerformedAt?: string;
+  initialRecord?:
+    | {
+        bucket: RecordRecencyBucketValue;
+        source: "bucket";
+      }
+    | {
+        performedAt: string;
+        source: "exact";
+      };
   source: "added" | "recommended";
 };
 
@@ -93,7 +105,7 @@ type OnboardingState = {
   setProfileRecord: (
     draftId: string,
     checkupTypeSlug: CheckupTypeSlug,
-    initialPerformedAt?: string,
+    initialRecord?: ProfileCheckupDraft["initialRecord"],
   ) => void;
   setTrackingSelection: (selection: TrackingSelection) => void;
 };
@@ -298,7 +310,7 @@ export const useOnboardingStore = create<OnboardingState>()(
             ...identity,
           })),
         })),
-      setProfileRecord: (draftId, checkupTypeSlug, initialPerformedAt) =>
+      setProfileRecord: (draftId, checkupTypeSlug, initialRecord) =>
         set((state) => ({
           profiles: updateProfile(state.profiles, draftId, (profile) => ({
             ...profile,
@@ -306,7 +318,7 @@ export const useOnboardingStore = create<OnboardingState>()(
               checkup.checkupTypeSlug === checkupTypeSlug
                 ? {
                     ...checkup,
-                    initialPerformedAt,
+                    initialRecord,
                   }
                 : checkup,
             ),
@@ -360,9 +372,7 @@ function profileDraftToInput(profile: ProfileDraft): OnboardingProfileInput {
       .map((checkup) => ({
         checkupTypeSlug: checkup.checkupTypeSlug,
         frequencyDays: checkup.frequencyDays,
-        initialRecord: checkup.initialPerformedAt
-          ? { performedAt: checkup.initialPerformedAt }
-          : undefined,
+        initialRecord: getInitialRecordInput(checkup),
       })),
     name: profile.name ?? "",
   };
@@ -405,4 +415,38 @@ function profileDraftToInput(profile: ProfileDraft): OnboardingProfileInput {
       },
     },
   };
+}
+
+function getInitialRecordInput(
+  checkup: ProfileCheckupDraft,
+): { performedAt: string } | undefined {
+  if (!checkup.initialRecord) {
+    return undefined;
+  }
+
+  if (checkup.initialRecord.source === "exact") {
+    return { performedAt: checkup.initialRecord.performedAt };
+  }
+
+  return getBucketPerformedAt(checkup.initialRecord.bucket);
+}
+
+function getBucketPerformedAt(
+  bucket: RecordRecencyBucketValue,
+): { performedAt: string } | undefined {
+  const currentYear = new Date().getFullYear();
+
+  if (bucket === RecordRecencyBucket.ThisYear) {
+    return { performedAt: `${currentYear}-01-01` };
+  }
+
+  if (bucket === RecordRecencyBucket.LastYear) {
+    return { performedAt: `${currentYear - 1}-01-01` };
+  }
+
+  if (bucket === RecordRecencyBucket.Earlier) {
+    return { performedAt: `${currentYear - 2}-01-01` };
+  }
+
+  return undefined;
 }
