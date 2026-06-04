@@ -15,20 +15,6 @@ import {
 } from "../../../../../lib/onboarding/progress";
 import { useOnboardingStore } from "../../../../../lib/onboarding/store";
 
-function fromFrequencyDays(days: number): {
-  unit: "months" | "years";
-  value: number;
-} {
-  if (days >= 730 && days % 365 === 0) {
-    return { unit: "years", value: days / 365 };
-  }
-  return { unit: "months", value: Math.max(1, Math.round(days / 30)) };
-}
-
-function toFrequencyDays(value: number, unit: "months" | "years"): number {
-  return unit === "years" ? value * 365 : value * 30;
-}
-
 export default function CheckupsStepScreen() {
   const router = useRouter();
   const { draftId } = useLocalSearchParams<{ draftId: string }>();
@@ -118,29 +104,22 @@ export default function CheckupsStepScreen() {
             const catalogItem = checkupTypeCatalog.find(
               (item) => item.slug === checkup.checkupTypeSlug,
             );
-            const { unit, value } = fromFrequencyDays(checkup.frequencyDays);
 
             return (
               <SelectedCheckupCard
-                frequencyValue={value}
+                frequencyDays={checkup.frequencyDays}
                 key={checkup.checkupTypeSlug}
                 name={catalogItem?.name ?? checkup.checkupTypeSlug}
-                onFrequencyChange={(next) =>
+                onFrequencyChange={(nextFrequencyDays) =>
                   replaceProfileCheckups(
                     activeProfile.draftId,
                     activeProfile.selectedCheckups.map((item) => {
                       if (item.checkupTypeSlug !== checkup.checkupTypeSlug) {
                         return item;
                       }
-                      const { unit: currentUnit } = fromFrequencyDays(
-                        item.frequencyDays,
-                      );
                       return {
                         ...item,
-                        frequencyDays: toFrequencyDays(
-                          Math.max(1, next),
-                          currentUnit,
-                        ),
+                        frequencyDays: nextFrequencyDays,
                       };
                     }),
                   )
@@ -154,7 +133,6 @@ export default function CheckupsStepScreen() {
                     ),
                   )
                 }
-                unit={unit}
               />
             );
           })}

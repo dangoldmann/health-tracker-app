@@ -1,21 +1,59 @@
 import { Pressable, Text, View } from "../ui";
 import { CloseIcon } from "./icons";
 
+const frequencyOptions = [
+  { frequencyDays: 30, label: "1 month" },
+  { frequencyDays: 60, label: "2 months" },
+  { frequencyDays: 90, label: "3 months" },
+  { frequencyDays: 120, label: "4 months" },
+  { frequencyDays: 150, label: "5 months" },
+  { frequencyDays: 180, label: "6 months" },
+  { frequencyDays: 270, label: "9 months" },
+  { frequencyDays: 365, label: "1 year" },
+  { frequencyDays: 548, label: "1.5 years" },
+  { frequencyDays: 730, label: "2 years" },
+  { frequencyDays: 1095, label: "3 years" },
+] as const;
+
+function getFrequencyOptionIndex(frequencyDays: number) {
+  const exactIndex = frequencyOptions.findIndex(
+    (option) => option.frequencyDays === frequencyDays,
+  );
+
+  if (exactIndex >= 0) {
+    return exactIndex;
+  }
+
+  return frequencyOptions.reduce((closestIndex, option, index) => {
+    const closestDistance = Math.abs(
+      frequencyOptions[closestIndex].frequencyDays - frequencyDays,
+    );
+    const optionDistance = Math.abs(option.frequencyDays - frequencyDays);
+    return optionDistance < closestDistance ? index : closestIndex;
+  }, 0);
+}
+
 function FrequencyStepper({
+  frequencyDays,
   onChange,
-  unit,
-  value,
 }: {
-  onChange: (next: number) => void;
-  unit: string;
-  value: number;
+  frequencyDays: number;
+  onChange: (nextFrequencyDays: number) => void;
 }) {
+  const optionIndex = getFrequencyOptionIndex(frequencyDays);
+  const option = frequencyOptions[optionIndex];
+  const canDecrease = optionIndex > 0;
+  const canIncrease = optionIndex < frequencyOptions.length - 1;
+
   return (
     <View className="h-8 flex-row items-stretch overflow-hidden rounded-[10px] border border-text-primary/16 bg-white">
       <Pressable
         accessibilityRole="button"
-        className="w-8 items-center justify-center"
-        onPress={() => onChange(Math.max(1, value - 1))}
+        className={`w-8 items-center justify-center ${canDecrease ? "" : "opacity-35"}`}
+        disabled={!canDecrease}
+        onPress={() =>
+          onChange(frequencyOptions[optionIndex - 1].frequencyDays)
+        }
       >
         <Text
           className="text-text-primary"
@@ -24,18 +62,21 @@ function FrequencyStepper({
           −
         </Text>
       </Pressable>
-      <View className="min-w-[64px] items-center justify-center border-x border-text-primary/10 px-2">
+      <View className="min-w-[76px] items-center justify-center border-x border-text-primary/10 px-2">
         <Text
           className="text-[13px] text-text-primary"
           style={{ fontFamily: "Geist" }}
         >
-          {value} {unit}
+          {option.label}
         </Text>
       </View>
       <Pressable
         accessibilityRole="button"
-        className="w-8 items-center justify-center"
-        onPress={() => onChange(value + 1)}
+        className={`w-8 items-center justify-center ${canIncrease ? "" : "opacity-35"}`}
+        disabled={!canIncrease}
+        onPress={() =>
+          onChange(frequencyOptions[optionIndex + 1].frequencyDays)
+        }
       >
         <Text
           className="text-text-primary"
@@ -49,17 +90,15 @@ function FrequencyStepper({
 }
 
 export function SelectedCheckupCard({
-  frequencyValue,
+  frequencyDays,
   name,
   onFrequencyChange,
   onRemove,
-  unit,
 }: {
-  frequencyValue: number;
+  frequencyDays: number;
   name: string;
-  onFrequencyChange: (next: number) => void;
+  onFrequencyChange: (nextFrequencyDays: number) => void;
   onRemove: () => void;
-  unit: string;
 }) {
   return (
     <View className="gap-3 rounded-[14px] border border-text-primary/16 bg-[#F6F1E4] p-3.5">
@@ -82,12 +121,10 @@ export function SelectedCheckupCard({
       <View className="flex-row items-center gap-2.5">
         <Text className="text-[12px] text-[#6B7771]">Every</Text>
         <FrequencyStepper
+          frequencyDays={frequencyDays}
           onChange={onFrequencyChange}
-          unit={unit}
-          value={frequencyValue}
         />
       </View>
     </View>
   );
 }
-
