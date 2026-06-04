@@ -3,7 +3,8 @@ export { AvailableCheckupChip } from "./available-checkup-chip";
 export { OnboardingStepScreen } from "./onboarding-step-screen";
 export { HealthToggles } from "./health-toggles";
 export { SexPicker } from "./sex-picker";
-export { AddExactDateLink, ExactDateRow, RecordSegmented } from "./records";
+export { AddExactDateLink, ExactDateRow } from "./exact-date";
+export { RecordRecencyPicker } from "./record-recency-picker";
 export {
   AddProfileButton,
   PerProfileReviewCard,

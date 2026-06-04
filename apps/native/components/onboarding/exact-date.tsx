@@ -1,46 +1,6 @@
 import { Pressable, Text, TextInput, View } from "../ui";
 import { CloseIcon } from "./icons";
 
-export function RecordSegmented<TValue extends string>({
-  onSelect,
-  options,
-  value,
-}: {
-  onSelect: (value: TValue) => void;
-  options: { label: string; value: TValue }[];
-  value?: TValue;
-}) {
-  return (
-    <View className="flex-row gap-1.5">
-      {options.map((option) => {
-        const selected = option.value === value;
-        return (
-          <Pressable
-            accessibilityRole="button"
-            className={`h-9 flex-1 items-center justify-center rounded-[10px] border px-1.5 ${
-              selected
-                ? "border-text-primary bg-text-primary"
-                : "border-text-primary/16 bg-transparent"
-            }`}
-            key={option.value}
-            onPress={() => onSelect(option.value)}
-          >
-            <Text
-              className={`text-[12px] ${
-                selected ? "text-[#F6F1E2]" : "text-text-primary"
-              }`}
-              numberOfLines={1}
-              style={{ fontFamily: "Geist-Medium", letterSpacing: -0.06 }}
-            >
-              {option.label}
-            </Text>
-          </Pressable>
-        );
-      })}
-    </View>
-  );
-}
-
 export function ExactDateRow({
   exactDate,
   onChangeText,

@@ -8,7 +8,7 @@ import {
   AddExactDateLink,
   ExactDateRow,
   OnboardingStepScreen,
-  RecordSegmented,
+  RecordRecencyPicker,
 } from "../../../../../components/onboarding";
 import { Text, View } from "../../../../../components/ui";
 import {
@@ -122,7 +122,7 @@ export default function RecordsStepScreen() {
                   {formatFrequencyLabel(checkup.frequencyDays)}
                 </Text>
               </View>
-              <RecordSegmented
+              <RecordRecencyPicker
                 onSelect={(next) =>
                   setProfileRecord(
                     activeProfile.draftId,
