@@ -18,10 +18,11 @@ function HealthToggle({
   return (
     <Pressable
       accessibilityRole="switch"
+      accessibilityState={{ checked: value }}
       className="flex-row items-center gap-4 border-t border-text-primary/10 py-3.5"
       onPress={() => onValueChange(!value)}
     >
-      <View className="flex-1">
+      <View className="min-w-0 flex-1">
         <Text
           className="text-[15.5px] text-text-primary"
           style={{ fontFamily: "Geist", letterSpacing: -0.08 }}
@@ -32,15 +33,26 @@ function HealthToggle({
           <Text className="mt-0.5 text-[12.5px] text-[#6B7771]">{hint}</Text>
         ) : null}
       </View>
-      <View
-        className={`h-6 w-10 justify-center rounded-full ${
-          value ? "bg-primary" : "bg-text-primary/15"
-        }`}
-      >
+      <View className="shrink-0 items-end" style={{ width: 54 }}>
         <View
-          className="h-5 w-5 rounded-full bg-white"
-          style={{ marginLeft: value ? 18 : 2 }}
-        />
+          style={{
+            backgroundColor: value ? "#0F6B61" : "rgba(15, 31, 27, 0.15)",
+            borderRadius: 13,
+            height: 26,
+            justifyContent: "center",
+            width: 48,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "#FFFFFF",
+              borderRadius: 11,
+              height: 22,
+              transform: [{ translateX: value ? 24 : 2 }],
+              width: 22,
+            }}
+          />
+        </View>
       </View>
     </Pressable>
   );
