@@ -240,8 +240,7 @@ export const useOnboardingStore = create<OnboardingState>()(
           PARENT: 2,
         };
         merged.sort((a, b) => {
-          const byRelationship =
-            order[a.relationship] - order[b.relationship];
+          const byRelationship = order[a.relationship] - order[b.relationship];
           if (byRelationship !== 0) return byRelationship;
           return a.draftId.localeCompare(b.draftId);
         });

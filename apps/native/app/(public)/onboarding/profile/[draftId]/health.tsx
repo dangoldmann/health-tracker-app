@@ -1,3 +1,4 @@
+import { getRecommendedCheckupsForProfile } from "@repo/validation";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
 import { AppButton } from "../../../../../components/app-button";
@@ -19,6 +20,9 @@ export default function HealthStepScreen() {
   const setProfileHealth = useOnboardingStore(
     (state) => state.setProfileHealth,
   );
+  const replaceProfileCheckups = useOnboardingStore(
+    (state) => state.replaceProfileCheckups,
+  );
   const completeProfileStep = useOnboardingStore(
     (state) => state.completeProfileStep,
   );
@@ -36,8 +40,28 @@ export default function HealthStepScreen() {
   }
 
   function continueFlow() {
-    completeProfileStep(activeProfile!.draftId, "health");
-    router.push(`/onboarding/profile/${activeProfile!.draftId}/checkups`);
+    const profile = activeProfile!;
+
+    if (profile.selectedCheckups.length === 0) {
+      const recommendedCheckups = getRecommendedCheckupsForProfile({
+        biologicalSex: profile.biologicalSex,
+        birthDate: profile.birthDate ?? "",
+        healthInfo:
+          profile.relationship === "SELF"
+            ? { riskFactors: profile.health.self }
+            : undefined,
+        relationship: profile.relationship,
+      }).map((checkup) => ({
+        checkupTypeSlug: checkup.checkupTypeSlug,
+        enabled: true,
+        frequencyDays: checkup.frequencyDays,
+        source: "recommended" as const,
+      }));
+      replaceProfileCheckups(profile.draftId, recommendedCheckups);
+    }
+
+    completeProfileStep(profile.draftId, "health");
+    router.push(`/onboarding/profile/${profile.draftId}/checkups`);
   }
 
   return (

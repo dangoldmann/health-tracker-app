@@ -1,37 +1,32 @@
-import { useMemo, useState } from "react";
-import {
-  checkupTypeCatalog,
-  getRecommendedCheckupsForProfile,
-} from "@repo/validation";
+import { checkupTypeCatalog } from "@repo/validation";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
+import { AppButton } from "../../../../../components/app-button";
+import { SectionLabel } from "../../../../../components/form-field";
 import {
-  AppButton,
-  Card,
-  ErrorText,
-  FormField,
-  StepScreen,
-} from "../../../../../components/onboarding-ui";
-import { Pressable, Text, View } from "../../../../../components/ui";
+  AvailableCheckupChip,
+  OnboardingStepScreen,
+  SelectedCheckupCard,
+} from "../../../../../components/onboarding";
+import { Text, View } from "../../../../../components/ui";
 import {
   getOnboardingProgress,
-  getProfileContextLabel,
+  getProfileIndicator,
 } from "../../../../../lib/onboarding/progress";
-import {
-  useOnboardingStore,
-  type ProfileCheckupDraft,
-} from "../../../../../lib/onboarding/store";
+import { useOnboardingStore } from "../../../../../lib/onboarding/store";
 
-function frequencyLabel(days: number) {
-  if (days === 180) {
-    return "About every 6 months";
+function fromFrequencyDays(days: number): {
+  unit: "months" | "years";
+  value: number;
+} {
+  if (days >= 730 && days % 365 === 0) {
+    return { unit: "years", value: days / 365 };
   }
+  return { unit: "months", value: Math.max(1, Math.round(days / 30)) };
+}
 
-  if (days === 365) {
-    return "About once a year";
-  }
-
-  return `Every ${days} days`;
+function toFrequencyDays(value: number, unit: "months" | "years"): number {
+  return unit === "years" ? value * 365 : value * 30;
 }
 
 export default function CheckupsStepScreen() {
@@ -44,158 +39,64 @@ export default function CheckupsStepScreen() {
   const completeProfileStep = useOnboardingStore(
     (state) => state.completeProfileStep,
   );
-  const profile = profiles.find((item) => item.draftId === draftId);
-  const initialCheckups = useMemo<ProfileCheckupDraft[]>(() => {
-    if (!profile) {
-      return [];
-    }
+  const activeProfile = profiles.find((item) => item.draftId === draftId);
 
-    if (profile.selectedCheckups.length > 0) {
-      return profile.selectedCheckups;
-    }
-
-    return getRecommendedCheckupsForProfile({
-      biologicalSex: profile.biologicalSex,
-      birthDate: profile.birthDate ?? "",
-      healthInfo:
-        profile.relationship === "SELF"
-          ? { riskFactors: profile.health.self }
-          : undefined,
-      relationship: profile.relationship,
-    }).map((checkup) => ({
-      checkupTypeSlug: checkup.checkupTypeSlug,
-      enabled: true,
-      frequencyDays: checkup.frequencyDays,
-      source: "recommended",
-    }));
-  }, [profile]);
-  const [checkups, setCheckups] = useState(initialCheckups);
-  const [submissionError, setSubmissionError] = useState<string | null>(null);
-
-  if (!profile) {
+  if (!activeProfile) {
     return (
-      <StepScreen title="Profile not found">
+      <OnboardingStepScreen title="Profile not found">
         <AppButton
           label="Restart onboarding"
           onPress={() => router.replace("/onboarding/tracking")}
         />
-      </StepScreen>
+      </OnboardingStepScreen>
     );
   }
 
-  const activeProfile = profile;
-
   const selectedSlugs = new Set(
-    checkups.map((checkup) => checkup.checkupTypeSlug),
+    activeProfile.selectedCheckups.map((checkup) => checkup.checkupTypeSlug),
   );
   const availableCheckups = checkupTypeCatalog.filter(
     (checkupType) => !selectedSlugs.has(checkupType.slug),
   );
 
   function continueFlow() {
-    setSubmissionError(null);
-
-    if (checkups.length === 0) {
-      setSubmissionError("Select at least one checkup.");
-      return;
-    }
-
-    if (
-      checkups.some(
-        (checkup) =>
-          !Number.isInteger(checkup.frequencyDays) ||
-          checkup.frequencyDays <= 0,
-      )
-    ) {
-      setSubmissionError("Every selected checkup needs a positive frequency.");
-      return;
-    }
-
-    replaceProfileCheckups(activeProfile.draftId, checkups);
-    completeProfileStep(activeProfile.draftId, "checkups");
-    router.push(`/onboarding/profile/${activeProfile.draftId}/records`);
+    completeProfileStep(activeProfile!.draftId, "checkups");
+    router.push(`/onboarding/profile/${activeProfile!.draftId}/records`);
   }
 
   return (
-    <StepScreen
-      kicker={`${getProfileContextLabel(profiles, activeProfile.draftId)} · ${
-        activeProfile.name || activeProfile.label
-      }`}
+    <OnboardingStepScreen
+      footer={
+        <AppButton
+          disabled={activeProfile.selectedCheckups.length === 0}
+          label="Continue"
+          onPress={continueFlow}
+        />
+      }
+      kicker={getProfileIndicator(profiles, activeProfile.draftId)}
       progress={getOnboardingProgress(profiles)}
-      subtitle="These are preselected from the shared v1 recommendation rules. You can remove or adjust them."
-      title="Recommended checkups"
-      footer={<AppButton label="Continue" onPress={continueFlow} />}
+      subtitle="We've started with what's typical for your profile. Tune as you like."
+      title="Your checkups."
+      titleSize={36}
     >
-      <View className="gap-4">
-        {checkups.map((checkup) => {
-          const catalogItem = checkupTypeCatalog.find(
-            (item) => item.slug === checkup.checkupTypeSlug,
-          );
-
-          return (
-            <Card key={checkup.checkupTypeSlug}>
-              <View className="gap-4">
-                <View className="flex-row items-start justify-between gap-4">
-                  <View className="flex-1 gap-1">
-                    <Text className="text-lg font-semibold text-[#172421]">
-                      {catalogItem?.name ?? checkup.checkupTypeSlug}
-                    </Text>
-                    <Text className="text-sm text-[#66736D]">
-                      {frequencyLabel(checkup.frequencyDays)}
-                    </Text>
-                  </View>
-                  <Pressable
-                    accessibilityRole="button"
-                    onPress={() =>
-                      setCheckups((current) =>
-                        current.filter(
-                          (item) =>
-                            item.checkupTypeSlug !== checkup.checkupTypeSlug,
-                        ),
-                      )
-                    }
-                  >
-                    <Text className="font-semibold text-[#B42318]">Remove</Text>
-                  </Pressable>
-                </View>
-                <FormField
-                  inputMode="numeric"
-                  keyboardType="number-pad"
-                  label="Frequency in days"
-                  onChangeText={(value) =>
-                    setCheckups((current) =>
-                      current.map((item) =>
-                        item.checkupTypeSlug === checkup.checkupTypeSlug
-                          ? {
-                              ...item,
-                              frequencyDays: Number.parseInt(value, 10) || 0,
-                            }
-                          : item,
-                      ),
-                    )
-                  }
-                  value={String(checkup.frequencyDays)}
-                />
-              </View>
-            </Card>
-          );
-        })}
-      </View>
-
-      {availableCheckups.length > 0 ? (
-        <Card>
-          <View className="gap-3">
-            <Text className="text-sm font-semibold uppercase tracking-[1.5px] text-[#6F7F78]">
-              Add another
-            </Text>
+      <View className="mt-3 gap-2.5">
+        <SectionLabel>Add more</SectionLabel>
+        {availableCheckups.length === 0 ? (
+          <Text
+            className="text-[13px] text-text-primary/45"
+            style={{ fontFamily: "Geist" }}
+          >
+            You&apos;ve added everything we suggest.
+          </Text>
+        ) : (
+          <View className="flex-row flex-wrap gap-2">
             {availableCheckups.map((checkupType) => (
-              <Pressable
-                accessibilityRole="button"
-                className="rounded-[20px] border border-[#D8D2C4] bg-white px-4 py-3"
+              <AvailableCheckupChip
                 key={checkupType.slug}
-                onPress={() =>
-                  setCheckups((current) => [
-                    ...current,
+                name={checkupType.name}
+                onAdd={() =>
+                  replaceProfileCheckups(activeProfile.draftId, [
+                    ...activeProfile.selectedCheckups,
                     {
                       checkupTypeSlug: checkupType.slug,
                       enabled: true,
@@ -204,17 +105,61 @@ export default function CheckupsStepScreen() {
                     },
                   ])
                 }
-              >
-                <Text className="font-semibold text-[#172421]">
-                  {checkupType.name}
-                </Text>
-              </Pressable>
+              />
             ))}
           </View>
-        </Card>
-      ) : null}
+        )}
+      </View>
 
-      <ErrorText>{submissionError}</ErrorText>
-    </StepScreen>
+      <View className="mt-5 gap-2.5">
+        <SectionLabel>{`Selected · ${activeProfile.selectedCheckups.length}`}</SectionLabel>
+        <View className="gap-2.5">
+          {activeProfile.selectedCheckups.map((checkup) => {
+            const catalogItem = checkupTypeCatalog.find(
+              (item) => item.slug === checkup.checkupTypeSlug,
+            );
+            const { unit, value } = fromFrequencyDays(checkup.frequencyDays);
+
+            return (
+              <SelectedCheckupCard
+                frequencyValue={value}
+                key={checkup.checkupTypeSlug}
+                name={catalogItem?.name ?? checkup.checkupTypeSlug}
+                onFrequencyChange={(next) =>
+                  replaceProfileCheckups(
+                    activeProfile.draftId,
+                    activeProfile.selectedCheckups.map((item) => {
+                      if (item.checkupTypeSlug !== checkup.checkupTypeSlug) {
+                        return item;
+                      }
+                      const { unit: currentUnit } = fromFrequencyDays(
+                        item.frequencyDays,
+                      );
+                      return {
+                        ...item,
+                        frequencyDays: toFrequencyDays(
+                          Math.max(1, next),
+                          currentUnit,
+                        ),
+                      };
+                    }),
+                  )
+                }
+                onRemove={() =>
+                  replaceProfileCheckups(
+                    activeProfile.draftId,
+                    activeProfile.selectedCheckups.filter(
+                      (item) =>
+                        item.checkupTypeSlug !== checkup.checkupTypeSlug,
+                    ),
+                  )
+                }
+                unit={unit}
+              />
+            );
+          })}
+        </View>
+      </View>
+    </OnboardingStepScreen>
   );
 }
