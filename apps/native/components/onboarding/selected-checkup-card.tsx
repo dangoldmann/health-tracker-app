@@ -3,7 +3,7 @@ import { CloseIcon } from "./icons";
 import {
   frequencyOptions,
   getFrequencyOptionIndex,
-} from "../../lib/onboarding/frequency";
+} from "../../lib/onboarding";
 
 function FrequencyStepper({
   frequencyDays,

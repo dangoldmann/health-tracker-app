@@ -8,12 +8,12 @@ import {
   SexPicker,
 } from "../../../../../components/onboarding";
 import { View } from "../../../../../components/ui";
-import { identityStepSchema } from "../../../../../lib/onboarding/forms";
 import {
   getOnboardingProgress,
   getProfileIndicator,
-} from "../../../../../lib/onboarding/progress";
-import { useOnboardingStore } from "../../../../../lib/onboarding/store";
+  identityStepSchema,
+  useOnboardingStore,
+} from "../../../../../lib/onboarding";
 import { ProfileRelationship } from "@repo/validation";
 
 const title: Record<ProfileRelationship, string> = {

@@ -10,8 +10,8 @@ import { View } from "../../../../../components/ui";
 import {
   getOnboardingProgress,
   getProfileIndicator,
-} from "../../../../../lib/onboarding/progress";
-import { useOnboardingStore } from "../../../../../lib/onboarding/store";
+  useOnboardingStore,
+} from "../../../../../lib/onboarding";
 
 export default function HealthStepScreen() {
   const router = useRouter();

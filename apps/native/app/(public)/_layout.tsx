@@ -5,8 +5,10 @@ import { AppButton } from "../../components/app-button";
 import { ErrorText } from "../../components/form-field";
 import { Screen } from "../../components/screen";
 import { useAuthProvider } from "../../lib/auth-provider";
-import { getResumeOnboardingRoute } from "../../lib/onboarding/routes";
-import { useOnboardingStore } from "../../lib/onboarding/store";
+import {
+  getResumeOnboardingRoute,
+  useOnboardingStore,
+} from "../../lib/onboarding";
 
 export default function PublicLayout() {
   const pathname = usePathname();

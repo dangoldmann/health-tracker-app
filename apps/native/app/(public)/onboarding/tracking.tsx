@@ -6,11 +6,11 @@ import {
   TrackingOption,
 } from "../../../components/onboarding";
 import { View } from "../../../components/ui";
-import { getOnboardingProgress } from "../../../lib/onboarding/progress";
 import {
+  getOnboardingProgress,
   useOnboardingStore,
   type TrackingSelection,
-} from "../../../lib/onboarding/store";
+} from "../../../lib/onboarding";
 
 export default function TrackingScreen() {
   const router = useRouter();

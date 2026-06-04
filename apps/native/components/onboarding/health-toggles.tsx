@@ -2,7 +2,7 @@ import type { ProfileRelationship } from "@repo/validation";
 
 import { SectionLabel } from "../form-field";
 import { Pressable, Text, View } from "../ui";
-import type { ProfileHealthDraft } from "../../lib/onboarding/store";
+import type { ProfileHealthDraft } from "../../lib/onboarding";
 
 function HealthToggle({
   hint,
