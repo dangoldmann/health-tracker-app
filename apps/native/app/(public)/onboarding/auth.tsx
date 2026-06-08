@@ -2,26 +2,22 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "expo-router";
+import { Feather } from "@expo/vector-icons";
 
 import { getMe } from "../../../lib/api";
-import {
-  AppButton,
-  Card,
-  ErrorText,
-  FormField,
-  StepScreen,
-} from "../../../components/onboarding-ui";
-import { Text, View } from "../../../components/ui";
+import { AppButton } from "../../../components/app-button";
+import { ErrorText, FormField } from "../../../components/form-field";
+import { OnboardingStepScreen } from "../../../components/onboarding";
+import { Pressable, Text, View } from "../../../components/ui";
 import { useAuthProvider } from "../../../lib/auth-provider";
 import { finalizeOnboarding } from "../../../lib/api";
 import {
   authFormSchema,
-  type AuthFormValues,
-} from "../../../lib/onboarding/forms";
-import {
-  useOnboardingStore,
   createFinalizePayload,
-} from "../../../lib/onboarding/store";
+  getOnboardingProgress,
+  useOnboardingStore,
+  type AuthFormValues,
+} from "../../../lib/onboarding";
 import { getCurrentSession, getSupabaseClient } from "../../../lib/supabase";
 
 export default function FinalAuthScreen() {
@@ -30,6 +26,7 @@ export default function FinalAuthScreen() {
   const profiles = useOnboardingStore((state) => state.profiles);
   const clearDraft = useOnboardingStore((state) => state.clearDraft);
   const [submissionError, setSubmissionError] = useState<string | null>(null);
+  const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const {
     formState: { isSubmitting },
     handleSubmit,
@@ -129,46 +126,64 @@ export default function FinalAuthScreen() {
   const isBusy = isSubmitting || finalizeMutation.isPending;
 
   return (
-    <StepScreen
-      progress={0.96}
-      subtitle="Create the auth account, then the app will send the completed onboarding payload to the API."
-      title="Create your account"
-    >
-      <Card>
-        <View className="gap-4">
-          <FormField
-            autoCapitalize="none"
-            autoComplete="email"
-            inputMode="email"
-            label="Email"
-            onBlur={register("email").onBlur}
-            onChangeText={(value) => setValue("email", value)}
-            value={values.email}
-          />
-          <FormField
-            label="Password"
-            onBlur={register("password").onBlur}
-            onChangeText={(value) => setValue("password", value)}
-            secureTextEntry
-            value={values.password}
-          />
-          <ErrorText>{submissionError}</ErrorText>
+    <OnboardingStepScreen
+      footer={
+        <View className="gap-3">
+          <Text
+            className="text-center text-[12px] text-text-primary/45"
+            style={{ lineHeight: 18, fontFamily: "Geist" }}
+          >
+            By continuing you agree to our Terms and Privacy Policy.
+          </Text>
           <AppButton
             disabled={isBusy}
-            label={isBusy ? "Creating account..." : "Create account and finish"}
+            label={isBusy ? "Creating account..." : "Finish & create account"}
             onPress={onSubmit}
           />
-          <AppButton
-            disabled
-            label="Continue with Google · Soon"
-            tone="secondary"
-          />
         </View>
-      </Card>
-      <Text className="px-2 text-sm leading-6 text-[#66736D]">
-        If this email is already registered, the error stays here. Login remains
-        a separate path.
-      </Text>
-    </StepScreen>
+      }
+      progress={getOnboardingProgress(profiles)}
+      subtitle="Almost done. This locks in everything you've set up."
+      title={"Create your\naccount."}
+      titleSize={42}
+    >
+      <View className="mt-4 gap-6">
+        <FormField
+          autoCapitalize="none"
+          autoComplete="email"
+          inputMode="email"
+          label="Email"
+          onBlur={register("email").onBlur}
+          onChangeText={(value) => setValue("email", value)}
+          placeholder="you@email.com"
+          value={values.email}
+        />
+        <FormField
+          label="Password"
+          onBlur={register("password").onBlur}
+          onChangeText={(value) => setValue("password", value)}
+          placeholder="At least 8 characters"
+          rightSlot={
+            <Pressable
+              accessibilityLabel={
+                isPasswordVisible ? "Hide password" : "Show password"
+              }
+              accessibilityRole="button"
+              hitSlop={12}
+              onPress={() => setIsPasswordVisible((visible) => !visible)}
+            >
+              <Feather
+                color="#6B7771"
+                name={isPasswordVisible ? "eye-off" : "eye"}
+                size={20}
+              />
+            </Pressable>
+          }
+          secureTextEntry={!isPasswordVisible}
+          value={values.password}
+        />
+        <ErrorText>{submissionError}</ErrorText>
+      </View>
+    </OnboardingStepScreen>
   );
 }

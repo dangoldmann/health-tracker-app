@@ -1,4 +1,4 @@
-import type { PropsWithChildren } from "react";
+import type { PropsWithChildren, ReactNode } from "react";
 import type { TextInputProps } from "react-native";
 
 import { Pressable, Text, TextInput, View } from "./ui";
@@ -6,8 +6,13 @@ import { Pressable, Text, TextInput, View } from "./ui";
 export function FormField({
   error,
   label,
+  rightSlot,
   ...inputProps
-}: TextInputProps & { error?: string; label: string }) {
+}: TextInputProps & {
+  error?: string;
+  label: string;
+  rightSlot?: ReactNode;
+}) {
   return (
     <View className="gap-2">
       <Text
@@ -16,13 +21,18 @@ export function FormField({
       >
         {label}
       </Text>
-      <View className="h-[38px] justify-center border-b border-text-primary/16">
+      <View
+        className={`h-[38px] flex-row items-center border-b border-text-primary/16 ${
+          rightSlot ? "pr-2" : ""
+        }`}
+      >
         <TextInput
-          className="text-[17px] text-text-primary"
+          className="flex-1 text-[17px] text-text-primary"
           placeholderTextColor="rgba(15, 31, 27, 0.32)"
           style={{ fontFamily: "Geist" }}
           {...inputProps}
         />
+        {rightSlot}
       </View>
       {error ? (
         <Text className="text-[13px] leading-5 text-[#B42318]" selectable>
