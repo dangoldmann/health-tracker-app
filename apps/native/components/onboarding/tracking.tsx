@@ -1,5 +1,5 @@
+import { Feather } from "@expo/vector-icons";
 import { Pressable, Text, View } from "../ui";
-import { CheckIcon } from "./icons";
 
 export function TrackingOption({
   iconLabel,
@@ -57,7 +57,7 @@ export function TrackingOption({
           selected ? "border-primary bg-primary" : "border-text-primary/16"
         }`}
       >
-        {selected ? <CheckIcon /> : null}
+        {selected ? <Feather color="#F6F1E2" name="check" size={14} /> : null}
       </View>
     </Pressable>
   );

@@ -1,5 +1,5 @@
+import { Feather } from "@expo/vector-icons";
 import { Pressable, Text, View } from "../ui";
-import { PlusIcon } from "./icons";
 
 export function AddProfileButton({
   disabled = false,
@@ -24,7 +24,11 @@ export function AddProfileButton({
       onPress={onPress}
     >
       <View className="flex-row items-center gap-2">
-        <PlusIcon color={disabled ? "rgba(15,31,27,0.28)" : "#0F6B61"} />
+        <Feather
+          color={disabled ? "rgba(15,31,27,0.28)" : "#0F6B61"}
+          name="plus"
+          size={14}
+        />
         <Text
           className={`text-[14px] ${
             disabled ? "text-text-primary/45" : "text-text-primary"

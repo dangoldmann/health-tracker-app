@@ -1,5 +1,5 @@
+import { Feather } from "@expo/vector-icons";
 import { Pressable, Text, TextInput, View } from "../ui";
-import { CloseIcon } from "./icons";
 
 export function ExactDateRow({
   exactDate,
@@ -32,7 +32,7 @@ export function ExactDateRow({
         hitSlop={8}
         onPress={onClear}
       >
-        <CloseIcon />
+        <Feather color="#6B7771" name="x" size={16} />
       </Pressable>
     </View>
   );

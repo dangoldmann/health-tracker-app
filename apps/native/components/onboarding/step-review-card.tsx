@@ -8,8 +8,8 @@ import {
   formatFrequencyLabel,
   EditableProfileStep,
 } from "../../lib/onboarding";
+import { Feather } from "@expo/vector-icons";
 import { SectionLabel } from "../form-field";
-import { ChevronRightIcon } from "./icons";
 
 function recencyBucketSummary(checkup: ProfileCheckupDraft) {
   if (checkup.initialRecord?.source === "bucket") {
@@ -153,7 +153,7 @@ export function StepReviewCard({
         >
           Edit
         </Text>
-        <ChevronRightIcon color="#0F6B61" />
+        <Feather color="#0F6B61" name="chevron-right" size={16} />
       </View>
     </Pressable>
   );

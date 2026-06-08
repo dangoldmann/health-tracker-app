@@ -1,5 +1,5 @@
+import { Feather } from "@expo/vector-icons";
 import { Pressable, Text, View } from "../ui";
-import { CloseIcon } from "./icons";
 import {
   frequencyOptions,
   getFrequencyOptionIndex,
@@ -87,7 +87,7 @@ export function SelectedCheckupCard({
           hitSlop={8}
           onPress={onRemove}
         >
-          <CloseIcon />
+          <Feather color="#6B7771" name="x" size={16} />
         </Pressable>
       </View>
       <View className="flex-row items-center gap-2.5">

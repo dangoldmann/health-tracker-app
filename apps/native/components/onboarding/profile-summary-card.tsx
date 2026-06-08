@@ -1,7 +1,7 @@
+import { Feather } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { ProfileDraft, RecordRecencyBucket } from "../../lib/onboarding";
 import { Pressable, Text, View } from "../ui";
-import { ChevronRightIcon } from "./icons";
 import { ProfileRelationship } from "@repo/validation";
 
 const roleLabels: Record<ProfileRelationship, string> = {
@@ -57,7 +57,7 @@ export function ProfileSummaryCard({ profile }: { profile: ProfileDraft }) {
           {statsLabel(profile)}
         </Text>
       </View>
-      <ChevronRightIcon />
+      <Feather color="#6B7771" name="chevron-right" size={16} />
     </Pressable>
   );
 }
