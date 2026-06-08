@@ -61,10 +61,10 @@ export default function ProfileReviewScreen() {
       titleSize={38}
     >
       <View className="mt-3 gap-3">
-        <StepReviewCard step="identity" activeProfile={activeProfile} />
-        <StepReviewCard step="health" activeProfile={activeProfile} />
-        <StepReviewCard step="checkups" activeProfile={activeProfile} />
-        <StepReviewCard step="records" activeProfile={activeProfile} />
+        <StepReviewCard step="identity" profile={activeProfile} />
+        <StepReviewCard step="health" profile={activeProfile} />
+        <StepReviewCard step="checkups" profile={activeProfile} />
+        <StepReviewCard step="records" profile={activeProfile} />
       </View>
     </OnboardingStepScreen>
   );
