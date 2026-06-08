@@ -23,3 +23,10 @@ export const recordRecencyBucketOptions: {
   { label: "Earlier", value: RecordRecencyBucket.Earlier },
   { label: "Don't recall", value: RecordRecencyBucket.DontRemember },
 ];
+
+export const recencyBucketStrings: Record<RecordRecencyBucket, string> = {
+  "dont-remember": "no date",
+  earlier: "earlier",
+  "last-year": "last year",
+  "this-year": "this year",
+};

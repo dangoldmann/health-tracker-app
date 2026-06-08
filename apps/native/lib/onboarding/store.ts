@@ -74,6 +74,7 @@ export type ProfileDraft = {
 };
 
 type ProfileStep = keyof ProfileDraft["completedSteps"];
+export type EditableProfileStep = Exclude<ProfileStep, 'review'>
 
 type OnboardingState = {
   currentDraftId: string | null;
