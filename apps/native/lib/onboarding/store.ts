@@ -85,6 +85,7 @@ type OnboardingState = {
   canAddProfile: (relationship: ProfileRelationship) => boolean;
   clearDraft: () => void;
   completeProfileStep: (draftId: string, step: ProfileStep) => void;
+  removeProfile: (draftId: string) => void;
   replaceProfileCheckups: (
     draftId: string,
     checkups: ProfileCheckupDraft[],
@@ -274,6 +275,12 @@ export const useOnboardingStore = create<OnboardingState>()(
               [step]: true,
             },
           })),
+        })),
+      removeProfile: (draftId) =>
+        set((state) => ({
+          profiles: state.profiles.filter(
+            (profile) => profile.draftId !== draftId,
+          ),
         })),
       replaceProfileCheckups: (draftId, checkups) =>
         set((state) => ({

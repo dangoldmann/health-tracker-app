@@ -1,5 +1,6 @@
 import { MAX_CHILD_PROFILES, MAX_PARENT_PROFILES } from "@repo/validation";
-import { useRouter } from "expo-router";
+import { useFocusEffect, useRouter } from "expo-router";
+import { useCallback } from "react";
 import { AppButton } from "../../../components/app-button";
 import {
   AddProfileButton,
@@ -17,6 +18,16 @@ export default function GlobalReviewScreen() {
   const profiles = useOnboardingStore((state) => state.profiles);
   const addProfile = useOnboardingStore((state) => state.addProfile);
   const canAddProfile = useOnboardingStore((state) => state.canAddProfile);
+  const removeProfile = useOnboardingStore((state) => state.removeProfile);
+
+  useFocusEffect(
+    useCallback(() => {
+      useOnboardingStore
+        .getState()
+        .profiles.filter((profile) => !profile.completedSteps.identity)
+        .forEach((profile) => removeProfile(profile.draftId));
+    }, [removeProfile]),
+  );
 
   if (profiles.length === 0) {
     return (
