@@ -5,6 +5,7 @@ export { HealthToggles } from "./health-toggles";
 export { SexPicker } from "./sex-picker";
 export { AddExactDateLink, ExactDateRow } from "./exact-date";
 export { RecordRecencyPicker } from "./record-recency-picker";
-export { AddProfileButton, ProfileSummaryCard } from "./review";
+export { AddProfileButton } from "./add-profile-button";
+export { ProfileSummaryCard } from "./profile-summary-card";
 export { StepReviewCard } from "./step-review-card";
 export { TrackingOption } from "./tracking";
