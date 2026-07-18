@@ -16,7 +16,7 @@ The schema follows a **"Profile-Centric"** approach. While a `User` handles auth
 
 - **Users:** System-level accounts (Email/Auth).
 - **Profiles:** The actual entities being tracked.
-  - _Relationship:_ One User → Many Profiles (e.g., a mother managing herself and two children).
+  - _Relationship:_ One User → Many Profiles (e.g., a mother managing herself and four children).
 
 ### 2.2 Family Coordination
 
